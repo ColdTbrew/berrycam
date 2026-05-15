@@ -1,0 +1,23 @@
+# Xcode
+.build/
+DerivedData/
+*.xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.swiftpm/
+
+# Logs and local files
+*.log
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

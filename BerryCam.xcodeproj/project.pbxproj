@@ -1,0 +1,478 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10A211B73023969693DFD3A5 /* ViewerWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */; };
+		22831C8A78750CA8C67548C5 /* SignalingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656603CE7C831CC94DA5FF5B /* SignalingModels.swift */; };
+		5144EBD60849A14E2FDD5E99 /* SignalingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D039012A7AA6E750A0E3649 /* SignalingServer.swift */; };
+		606E0192BA3D699FAE2D436A /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 0208176193B01B2446C5FB7F /* LiveKitWebRTC */; };
+		64A8AC0602A5A16887691464 /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 30BBA0FB0BF8E94A4759812A /* LiveKitWebRTC */; };
+		7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */; };
+		7EA08AB69F8579CC818AD523 /* WebRTCAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */; };
+		8E4FC5EFB2FD1A6F8DA66A27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CC4BA317E781EC6432997 /* ContentView.swift */; };
+		A5687F011804B7B3B5D913FD /* BerryCamWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */; };
+		B0EC02D2E8F67B9FAFD54C0F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D343F906E58458C77082116A /* ContentView.swift */; };
+		BEA89833E19948F809F6925E /* WebRTCVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */; };
+		C9235A44D37D3D5C5BC8869B /* WebRTCVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */; };
+		CD9EB950A99BD80495939DCB /* WebRTCAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */; };
+		DD4AD57B4E4743D3ED853090 /* SignalingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656603CE7C831CC94DA5FF5B /* SignalingModels.swift */; };
+		E15090A3C7395E494C16C801 /* BerryCamMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */; };
+		E2A3D3C678385C44C4588335 /* SignalingClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2C168448AE5AAFC831E4A5 /* SignalingClient.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostWebRTCService.swift; sourceTree = "<group>"; };
+		4F5CC4BA317E781EC6432997 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewerWebRTCService.swift; sourceTree = "<group>"; };
+		5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BerryCamWatchApp.swift; sourceTree = "<group>"; };
+		656603CE7C831CC94DA5FF5B /* SignalingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingModels.swift; sourceTree = "<group>"; };
+		84CB4B55E0A40B16A9628CC7 /* BerryCamMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BerryCamMac.entitlements; sourceTree = "<group>"; };
+		8D039012A7AA6E750A0E3649 /* SignalingServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingServer.swift; sourceTree = "<group>"; };
+		B20E89D0F490DF746E2C7A45 /* BerryCamWatch.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BerryCamWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9D8C08427CBF2659E8BCA78 /* BerryCamMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BerryCamMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BerryCamMacApp.swift; sourceTree = "<group>"; };
+		D343F906E58458C77082116A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoView.swift; sourceTree = "<group>"; };
+		F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCAliases.swift; sourceTree = "<group>"; };
+		FF2C168448AE5AAFC831E4A5 /* SignalingClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingClient.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1597B7E614101F0766BE7C66 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64A8AC0602A5A16887691464 /* LiveKitWebRTC in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5CA6C9DB694B6BC76E5D7CFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				606E0192BA3D699FAE2D436A /* LiveKitWebRTC in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		636AF84450D44C66FE1DF1B2 /* BerryCamMac */ = {
+			isa = PBXGroup;
+			children = (
+				84CB4B55E0A40B16A9628CC7 /* BerryCamMac.entitlements */,
+				C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */,
+				4F5CC4BA317E781EC6432997 /* ContentView.swift */,
+				18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */,
+				8D039012A7AA6E750A0E3649 /* SignalingServer.swift */,
+			);
+			path = BerryCamMac;
+			sourceTree = "<group>";
+		};
+		7BAAA1499B830D39144CC359 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9D8C08427CBF2659E8BCA78 /* BerryCamMac.app */,
+				B20E89D0F490DF746E2C7A45 /* BerryCamWatch.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7C4A57D99B0435E8C3F5A10A /* BerryCamWatch */ = {
+			isa = PBXGroup;
+			children = (
+				5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */,
+				D343F906E58458C77082116A /* ContentView.swift */,
+				FF2C168448AE5AAFC831E4A5 /* SignalingClient.swift */,
+				585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */,
+			);
+			path = BerryCamWatch;
+			sourceTree = "<group>";
+		};
+		7E80A814E5B0B1D2A2B7434D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				656603CE7C831CC94DA5FF5B /* SignalingModels.swift */,
+				F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */,
+				E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		BBE90FB17D18F4A8868642A9 = {
+			isa = PBXGroup;
+			children = (
+				636AF84450D44C66FE1DF1B2 /* BerryCamMac */,
+				7C4A57D99B0435E8C3F5A10A /* BerryCamWatch */,
+				7E80A814E5B0B1D2A2B7434D /* Shared */,
+				7BAAA1499B830D39144CC359 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B554ECD64299410982EE5AAA /* BerryCamMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8E96DC3A0AB2A7E35F013BC /* Build configuration list for PBXNativeTarget "BerryCamMac" */;
+			buildPhases = (
+				BB9F685DE1473A3F7D3E8B58 /* Sources */,
+				1597B7E614101F0766BE7C66 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BerryCamMac;
+			packageProductDependencies = (
+				30BBA0FB0BF8E94A4759812A /* LiveKitWebRTC */,
+			);
+			productName = BerryCamMac;
+			productReference = B9D8C08427CBF2659E8BCA78 /* BerryCamMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E279FF40EA5AE125DE3A88BC /* BerryCamWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9B2077824D066B28E4DB7FC /* Build configuration list for PBXNativeTarget "BerryCamWatch" */;
+			buildPhases = (
+				8B22275466FCA56BF5E42CCB /* Sources */,
+				5CA6C9DB694B6BC76E5D7CFB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BerryCamWatch;
+			packageProductDependencies = (
+				0208176193B01B2446C5FB7F /* LiveKitWebRTC */,
+			);
+			productName = BerryCamWatch;
+			productReference = B20E89D0F490DF746E2C7A45 /* BerryCamWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C0FA65FAC62278826AAFC07B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = EF1DFFCCF1F40374288B1FC6 /* Build configuration list for PBXProject "BerryCam" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BBE90FB17D18F4A8868642A9;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EAA5517E2F9CF3882EDF3E2C /* XCRemoteSwiftPackageReference "webrtc-xcframework" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B554ECD64299410982EE5AAA /* BerryCamMac */,
+				E279FF40EA5AE125DE3A88BC /* BerryCamWatch */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8B22275466FCA56BF5E42CCB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5687F011804B7B3B5D913FD /* BerryCamWatchApp.swift in Sources */,
+				B0EC02D2E8F67B9FAFD54C0F /* ContentView.swift in Sources */,
+				E2A3D3C678385C44C4588335 /* SignalingClient.swift in Sources */,
+				22831C8A78750CA8C67548C5 /* SignalingModels.swift in Sources */,
+				10A211B73023969693DFD3A5 /* ViewerWebRTCService.swift in Sources */,
+				7EA08AB69F8579CC818AD523 /* WebRTCAliases.swift in Sources */,
+				C9235A44D37D3D5C5BC8869B /* WebRTCVideoView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB9F685DE1473A3F7D3E8B58 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E15090A3C7395E494C16C801 /* BerryCamMacApp.swift in Sources */,
+				8E4FC5EFB2FD1A6F8DA66A27 /* ContentView.swift in Sources */,
+				7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */,
+				DD4AD57B4E4743D3ED853090 /* SignalingModels.swift in Sources */,
+				5144EBD60849A14E2FDD5E99 /* SignalingServer.swift in Sources */,
+				CD9EB950A99BD80495939DCB /* WebRTCAliases.swift in Sources */,
+				BEA89833E19948F809F6925E /* WebRTCVideoView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4E0DCC54721A88F119F16D44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BerryCamMac/BerryCamMac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "BerryCam uses the Mac camera to stream live frames to your own devices.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam serves WebRTC signaling to your iPhone through Tailscale.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.coldtbrew.BerryCamMac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		655A435BD08F7EA1F43D4454 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		6A4FF9424BAC7BCD6CBF1E52 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam connects to your Mac through Tailscale or your local network.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.coldtbrew.BerryCamWatch;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BA761B7F3476C557092150DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BerryCamMac/BerryCamMac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "BerryCam uses the Mac camera to stream live frames to your own devices.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam serves WebRTC signaling to your iPhone through Tailscale.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.coldtbrew.BerryCamMac;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C87D5CB7AA001E45FE3DDB83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam connects to your Mac through Tailscale or your local network.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.coldtbrew.BerryCamWatch;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FD86BB0E48E9D97897E99AC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A9B2077824D066B28E4DB7FC /* Build configuration list for PBXNativeTarget "BerryCamWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C87D5CB7AA001E45FE3DDB83 /* Debug */,
+				6A4FF9424BAC7BCD6CBF1E52 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EF1DFFCCF1F40374288B1FC6 /* Build configuration list for PBXProject "BerryCam" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD86BB0E48E9D97897E99AC8 /* Debug */,
+				655A435BD08F7EA1F43D4454 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F8E96DC3A0AB2A7E35F013BC /* Build configuration list for PBXNativeTarget "BerryCamMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E0DCC54721A88F119F16D44 /* Debug */,
+				BA761B7F3476C557092150DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EAA5517E2F9CF3882EDF3E2C /* XCRemoteSwiftPackageReference "webrtc-xcframework" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/livekit/webrtc-xcframework.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 137.7151.13;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0208176193B01B2446C5FB7F /* LiveKitWebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAA5517E2F9CF3882EDF3E2C /* XCRemoteSwiftPackageReference "webrtc-xcframework" */;
+			productName = LiveKitWebRTC;
+		};
+		30BBA0FB0BF8E94A4759812A /* LiveKitWebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAA5517E2F9CF3882EDF3E2C /* XCRemoteSwiftPackageReference "webrtc-xcframework" */;
+			productName = LiveKitWebRTC;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = C0FA65FAC62278826AAFC07B /* Project object */;
+}

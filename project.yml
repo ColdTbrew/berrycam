@@ -1,0 +1,54 @@
+name: BerryCam
+options:
+  bundleIdPrefix: com.coldtbrew
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+packages:
+  LiveKitWebRTC:
+    url: https://github.com/livekit/webrtc-xcframework.git
+    from: 137.7151.13
+targets:
+  BerryCamMac:
+    type: application
+    platform: macOS
+    sources:
+      - BerryCamMac
+      - Shared
+    dependencies:
+      - package: LiveKitWebRTC
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.coldtbrew.BerryCamMac
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSCameraUsageDescription: BerryCam uses the Mac camera to stream live frames to your own devices.
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: BerryCam serves WebRTC signaling to your iPhone through Tailscale.
+        CODE_SIGN_ENTITLEMENTS: BerryCamMac/BerryCamMac.entitlements
+    entitlements:
+      path: BerryCamMac/BerryCamMac.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+        com.apple.security.device.camera: true
+        com.apple.security.network.server: true
+        com.apple.security.network.client: true
+  BerryCamWatch:
+    type: application
+    platform: iOS
+    sources:
+      - BerryCamWatch
+      - Shared
+    dependencies:
+      - package: LiveKitWebRTC
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.coldtbrew.BerryCamWatch
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
+        INFOPLIST_KEY_UIRequiresFullScreen: true
+        INFOPLIST_KEY_NSSupportsLiveActivities: false
+        INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: true
