@@ -14,11 +14,6 @@ struct ContentView: View {
         }
         .navigationTitle("BerryCam")
         .toolbar {
-            ToolbarItemGroup {
-                StatusBadge(title: "Signaling", value: signaling.isRunning ? "On" : "Off", isActive: signaling.isRunning)
-                StatusBadge(title: "Camera", value: webRTC.captureSession == nil ? "Off" : "On", isActive: webRTC.captureSession != nil)
-            }
-
             ToolbarItem(placement: .primaryAction) {
                 if signaling.isRunning {
                     Button {
@@ -32,7 +27,6 @@ struct ContentView: View {
                     } label: {
                         Label("Start Host", systemImage: "play.fill")
                     }
-                    .buttonStyle(.borderedProminent)
                 }
             }
         }
@@ -144,23 +138,6 @@ struct ContentView: View {
     private func stop() {
         signaling.stop()
         webRTC.stop()
-    }
-}
-
-private struct StatusBadge: View {
-    let title: String
-    let value: String
-    let isActive: Bool
-
-    var body: some View {
-        Label {
-            Text("\(title): \(value)")
-        } icon: {
-            Image(systemName: isActive ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(isActive ? .green : .secondary)
-        }
-        .font(.caption)
-        .labelStyle(.titleAndIcon)
     }
 }
 
