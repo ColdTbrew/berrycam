@@ -10,6 +10,7 @@
 		007921A7D7BF9CBDE450B568 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42C28F16FED927C6266F768 /* CameraPreviewView.swift */; };
 		10A211B73023969693DFD3A5 /* ViewerWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */; };
 		22831C8A78750CA8C67548C5 /* SignalingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656603CE7C831CC94DA5FF5B /* SignalingModels.swift */; };
+		259D1BB8BC2ACD5940E1DA43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC6F864EA608F657EC2AE3D0 /* Assets.xcassets */; };
 		5144EBD60849A14E2FDD5E99 /* SignalingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D039012A7AA6E750A0E3649 /* SignalingServer.swift */; };
 		606E0192BA3D699FAE2D436A /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 0208176193B01B2446C5FB7F /* LiveKitWebRTC */; };
 		64A8AC0602A5A16887691464 /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 30BBA0FB0BF8E94A4759812A /* LiveKitWebRTC */; };
@@ -17,6 +18,7 @@
 		7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */; };
 		7EA08AB69F8579CC818AD523 /* WebRTCAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */; };
 		8E4FC5EFB2FD1A6F8DA66A27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CC4BA317E781EC6432997 /* ContentView.swift */; };
+		9A2666346E55F9D4390BEDDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F644CD9F6B7CBBAEC6979A33 /* Assets.xcassets */; };
 		A5687F011804B7B3B5D913FD /* BerryCamWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */; };
 		B0EC02D2E8F67B9FAFD54C0F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D343F906E58458C77082116A /* ContentView.swift */; };
 		BEA89833E19948F809F6925E /* WebRTCVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */; };
@@ -42,7 +44,9 @@
 		C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BerryCamMacApp.swift; sourceTree = "<group>"; };
 		D343F906E58458C77082116A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoView.swift; sourceTree = "<group>"; };
+		EC6F864EA608F657EC2AE3D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCAliases.swift; sourceTree = "<group>"; };
+		F644CD9F6B7CBBAEC6979A33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FF2C168448AE5AAFC831E4A5 /* SignalingClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,6 +73,7 @@
 		636AF84450D44C66FE1DF1B2 /* BerryCamMac */ = {
 			isa = PBXGroup;
 			children = (
+				F644CD9F6B7CBBAEC6979A33 /* Assets.xcassets */,
 				84CB4B55E0A40B16A9628CC7 /* BerryCamMac.entitlements */,
 				C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */,
 				02D8A7646D8329119E151562 /* CameraCaptureController.swift */,
@@ -92,6 +97,7 @@
 		7C4A57D99B0435E8C3F5A10A /* BerryCamWatch */ = {
 			isa = PBXGroup;
 			children = (
+				EC6F864EA608F657EC2AE3D0 /* Assets.xcassets */,
 				5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */,
 				D343F906E58458C77082116A /* ContentView.swift */,
 				FF2C168448AE5AAFC831E4A5 /* SignalingClient.swift */,
@@ -128,6 +134,7 @@
 			buildConfigurationList = F8E96DC3A0AB2A7E35F013BC /* Build configuration list for PBXNativeTarget "BerryCamMac" */;
 			buildPhases = (
 				BB9F685DE1473A3F7D3E8B58 /* Sources */,
+				D9B3F022DD766DB5329A09DA /* Resources */,
 				1597B7E614101F0766BE7C66 /* Frameworks */,
 			);
 			buildRules = (
@@ -147,6 +154,7 @@
 			buildConfigurationList = A9B2077824D066B28E4DB7FC /* Build configuration list for PBXNativeTarget "BerryCamWatch" */;
 			buildPhases = (
 				8B22275466FCA56BF5E42CCB /* Sources */,
+				45E67D8FF4C9DDA94E413B2A /* Resources */,
 				5CA6C9DB694B6BC76E5D7CFB /* Frameworks */,
 			);
 			buildRules = (
@@ -169,6 +177,12 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					E279FF40EA5AE125DE3A88BC = {
+						DevelopmentTeam = K44PM3Z3K7;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = EF1DFFCCF1F40374288B1FC6 /* Build configuration list for PBXProject "BerryCam" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -192,6 +206,25 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		45E67D8FF4C9DDA94E413B2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				259D1BB8BC2ACD5940E1DA43 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9B3F022DD766DB5329A09DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A2666346E55F9D4390BEDDC /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8B22275466FCA56BF5E42CCB /* Sources */ = {
@@ -308,6 +341,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = K44PM3Z3K7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam connects to your Mac through Tailscale or your local network.";
@@ -349,6 +384,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = K44PM3Z3K7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam connects to your Mac through Tailscale or your local network.";

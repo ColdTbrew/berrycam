@@ -47,6 +47,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.coldtbrew.BerryCamWatch
+        DEVELOPMENT_TEAM: K44PM3Z3K7
+        CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
         INFOPLIST_KEY_UIRequiresFullScreen: true
