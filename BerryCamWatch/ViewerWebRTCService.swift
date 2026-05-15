@@ -134,8 +134,23 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
     }
 
     private func fail(_ error: Error) {
-        connectionState = error.localizedDescription
+        connectionState = connectionMessage(for: error)
         isWatching = false
+    }
+
+    private func connectionMessage(for error: Error) -> String {
+        guard let urlError = error as? URLError else {
+            return error.localizedDescription
+        }
+
+        switch urlError.code {
+        case .timedOut, .cannotConnectToHost, .cannotFindHost, .networkConnectionLost:
+            return "Host unreachable"
+        case .notConnectedToInternet:
+            return "No network"
+        default:
+            return urlError.localizedDescription
+        }
     }
 }
 

@@ -2,9 +2,10 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var viewer: ViewerWebRTCService
-    @State private var host = "100.x.y.z"
+    @State private var host = ""
     @State private var port = "3000"
     @State private var accessCode = "berrycam"
+    @State private var connectionAlert: ConnectionAlert?
 
     var body: some View {
         NavigationStack {
@@ -21,6 +22,13 @@ struct ContentView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     statusBadge
                 }
+            }
+            .alert(item: $connectionAlert) { alert in
+                Alert(
+                    title: Text(alert.title),
+                    message: Text(alert.message),
+                    dismissButton: .default(Text("OK"))
+                )
             }
         }
     }
@@ -40,12 +48,12 @@ struct ContentView: View {
             } header: {
                 Text("Host")
             } footer: {
-                Text("Use the Mac's Tailscale name or 100.x.y.z address.")
+                Text("Use the Mac's Tailscale name or 100.x.y.z address shown in BerryCam Mac.")
             }
 
             Section {
                 Button {
-                    viewer.connect(host: host, port: UInt16(port) ?? 3000, accessCode: accessCode)
+                    connect()
                 } label: {
                     Label("Connect", systemImage: "play.fill")
                         .frame(maxWidth: .infinity)
@@ -102,7 +110,7 @@ struct ContentView: View {
 
     private var statusColor: Color {
         switch viewer.connectionState.lowercased() {
-        case "connected", "watching":
+        case "connected", "watching", "live":
             .green
         case "connecting", "checking":
             .orange
@@ -112,4 +120,28 @@ struct ContentView: View {
             .secondary
         }
     }
+
+    private func connect() {
+        let normalizedHost = host
+            .replacingOccurrences(of: "http://", with: "")
+            .replacingOccurrences(of: "https://", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !normalizedHost.isEmpty, normalizedHost != "100.x.y.z" else {
+            connectionAlert = ConnectionAlert(
+                title: "Mac Address Needed",
+                message: "Enter the real Tailscale address shown in BerryCam Mac, for example 100.119.92.102."
+            )
+            return
+        }
+
+        host = normalizedHost
+        viewer.connect(host: normalizedHost, port: UInt16(port) ?? 3000, accessCode: accessCode)
+    }
+}
+
+private struct ConnectionAlert: Identifiable {
+    let id = UUID()
+    let title: String
+    let message: String
 }
