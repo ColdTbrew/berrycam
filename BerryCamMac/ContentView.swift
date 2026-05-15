@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject private var webRTC: HostWebRTCService
     @EnvironmentObject private var signaling: SignalingServer
+    @EnvironmentObject private var sleepPreventer: SleepPreventer
     @State private var accessCode = "berrycam"
     @State private var portText = "3000"
 
@@ -36,6 +37,13 @@ struct ContentView: View {
     private var sidebar: some View {
         Form {
             Section("Host") {
+                Toggle(isOn: Binding(
+                    get: { sleepPreventer.isEnabled },
+                    set: { sleepPreventer.setEnabled($0) }
+                )) {
+                    Label("Keep Mac Awake", systemImage: "moon.zzz")
+                }
+
                 SecureField("Access Code", text: $accessCode)
                     .textContentType(.password)
 
@@ -80,6 +88,9 @@ struct ContentView: View {
             Section("Status") {
                 StatusRow(label: "Signaling", value: signaling.status)
                 StatusRow(label: "WebRTC", value: webRTC.connectionState)
+                StatusRow(label: "Viewer", value: signaling.viewerStatus)
+                StatusRow(label: "Audio", value: webRTC.audioState)
+                StatusRow(label: "Sleep", value: sleepPreventer.status)
             }
 
             Section("iPhone") {

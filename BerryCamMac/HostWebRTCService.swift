@@ -12,6 +12,8 @@ final class HostWebRTCService: NSObject, ObservableObject {
     @Published private(set) var localVideoTrack: RTCVideoTrack?
     @Published private(set) var captureSession: AVCaptureSession?
     @Published private(set) var connectionState = "Idle"
+    @Published private(set) var audioState = "Off"
+    @Published private(set) var viewerState = "No viewer"
     @Published private(set) var cameraOptions: [CameraOption] = []
     @Published var selectedCameraID: String?
 
@@ -20,6 +22,8 @@ final class HostWebRTCService: NSObject, ObservableObject {
     private var peerConnection: RTCPeerConnection?
     private var factory: RTCPeerConnectionFactory?
     private var captureController: CameraCaptureController?
+    private var localAudioTrack: RTCAudioTrack?
+    private var remoteAudioTrack: RTCAudioTrack?
 
     override init() {
         super.init()
@@ -62,6 +66,11 @@ final class HostWebRTCService: NSObject, ObservableObject {
 
         let track = factory.videoTrack(with: videoSource, trackId: "berrycam-video")
         localVideoTrack = track
+        localAudioTrack = factory.audioTrack(
+            with: factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)),
+            trackId: "berrycam-mac-audio"
+        )
+        audioState = "Mac mic ready"
         startCapture(using: captureController)
     }
 
@@ -69,10 +78,14 @@ final class HostWebRTCService: NSObject, ObservableObject {
         peerConnection?.close()
         peerConnection = nil
         localVideoTrack = nil
+        localAudioTrack = nil
+        remoteAudioTrack = nil
         captureSession = nil
         captureController?.stop()
         captureController = nil
         connectionState = "Idle"
+        audioState = "Off"
+        viewerState = "No viewer"
     }
 
     func answer(offer: RTCSessionDescription, completion: @escaping (Result<RTCSessionDescription, Error>) -> Void) {
@@ -103,9 +116,13 @@ final class HostWebRTCService: NSObject, ObservableObject {
         if let localVideoTrack {
             peerConnection.add(localVideoTrack, streamIds: ["berrycam"])
         }
+        if let localAudioTrack {
+            peerConnection.add(localAudioTrack, streamIds: ["berrycam"])
+        }
 
         self.peerConnection = peerConnection
         connectionState = "Received offer"
+        viewerState = "Offer received"
 
         peerConnection.setRemoteDescription(offer) { [weak self] error in
             if let error {
@@ -115,7 +132,7 @@ final class HostWebRTCService: NSObject, ObservableObject {
 
             let mediaConstraints = RTCMediaConstraints(
                 mandatoryConstraints: [
-                    kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueFalse,
+                    kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
                     kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueFalse,
                 ],
                 optionalConstraints: nil
@@ -137,6 +154,7 @@ final class HostWebRTCService: NSObject, ObservableObject {
                             completion(.failure(error))
                         } else {
                             self?.connectionState = "Answered"
+                            self?.viewerState = "Answered"
                             completion(.success(answer))
                         }
                     }
@@ -204,6 +222,13 @@ extension HostWebRTCService: RTCPeerConnectionDelegate {
     }
     nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {}
     nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {}
+    nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didAdd rtpReceiver: RTCRtpReceiver, streams: [RTCMediaStream]) {
+        guard let track = rtpReceiver.track as? RTCAudioTrack else { return }
+        Task { @MainActor [weak self] in
+            self?.remoteAudioTrack = track
+            self?.audioState = "Two-way audio"
+        }
+    }
 }
 
 private enum BerryCamError: LocalizedError {

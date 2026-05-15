@@ -27,6 +27,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.coldtbrew.BerryCamMac
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_NSCameraUsageDescription: BerryCam uses the Mac camera to stream live frames to your own devices.
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: BerryCam uses the Mac microphone for two-way audio with your iPhone.
         INFOPLIST_KEY_NSLocalNetworkUsageDescription: BerryCam serves WebRTC signaling to your iPhone through Tailscale.
         CODE_SIGN_ENTITLEMENTS: BerryCamMac/BerryCamMac.entitlements
     entitlements:
@@ -34,6 +35,7 @@ targets:
       properties:
         com.apple.security.app-sandbox: false
         com.apple.security.device.camera: true
+        com.apple.security.device.audio-input: true
         com.apple.security.network.server: true
         com.apple.security.network.client: true
   BerryCamWatch:
@@ -48,6 +50,7 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
+        NSMicrophoneUsageDescription: BerryCam uses the iPhone microphone for two-way audio with your Mac.
         NSSupportsLiveActivities: false
         UILaunchScreen: {}
         UIRequiresFullScreen: true

@@ -19,8 +19,10 @@ struct ContentView: View {
             .navigationTitle("BerryCam")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    statusBadge
+                if viewer.isWatching {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        statusBadge
+                    }
                 }
             }
             .alert(item: $connectionAlert) { alert in
@@ -57,10 +59,21 @@ struct ContentView: View {
                 } label: {
                     Label("Connect", systemImage: "play.fill")
                         .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+                if viewer.connectionState != "Idle" {
+                    Text(viewer.connectionState)
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(statusColor)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                }
             }
+            .listRowInsets(EdgeInsets(top: 18, leading: 36, bottom: 18, trailing: 36))
         }
     }
 
@@ -79,6 +92,14 @@ struct ContentView: View {
                     description: Text("BerryCam is connected and waiting for the Mac camera stream.")
                 )
                 .foregroundStyle(.white.secondary)
+            }
+
+            VStack {
+                Spacer()
+                Text(viewer.audioState)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.secondary)
+                    .padding(.bottom, 14)
             }
 
             Button {

@@ -8,6 +8,7 @@ final class SignalingServer: ObservableObject {
     @Published private(set) var isRunning = false
     @Published private(set) var status = "Stopped"
     @Published private(set) var urls: [String] = []
+    @Published private(set) var viewerStatus = "No viewer"
 
     var onOffer: ((RTCSessionDescription, @escaping (Result<RTCSessionDescription, Error>) -> Void) -> Void)?
     var onRemoteCandidate: ((RTCIceCandidate) -> Void)?
@@ -57,6 +58,7 @@ final class SignalingServer: ObservableObject {
         isRunning = false
         status = "Stopped"
         urls = []
+        viewerStatus = "No viewer"
         hostCandidates.removeAll()
     }
 
@@ -109,12 +111,15 @@ final class SignalingServer: ObservableObject {
             }
 
             let offer = RTCSessionDescription(payload: SessionDescriptionPayload(sdp: sdp, type: type))
+            viewerStatus = "Connecting"
             onOffer?(offer) { [weak self] result in
                 Task { @MainActor in
                     switch result {
                     case .success(let answer):
+                        self?.viewerStatus = "Viewer connected"
                         self?.sendJSON(answer.payload, on: connection)
                     case .failure(let error):
+                        self?.viewerStatus = "Offer failed"
                         self?.send(status: 500, body: #"{"error":"\#(error.localizedDescription)"}"#, on: connection)
                     }
                 }
@@ -130,6 +135,7 @@ final class SignalingServer: ObservableObject {
                 return
             }
             onRemoteCandidate?(RTCIceCandidate(payload: candidate))
+            viewerStatus = "Receiving iPhone ICE"
             sendJSON(["ok": true], on: connection)
 
         case ("GET", "/candidates"):
@@ -139,6 +145,7 @@ final class SignalingServer: ObservableObject {
             }
             let after = Int(request.query["after"] ?? "0") ?? 0
             let payload = Array(hostCandidates.dropFirst(max(0, after)))
+            viewerStatus = payload.isEmpty ? "Viewer polling" : "Sending Mac ICE"
             sendJSON(CandidatesResponse(candidates: payload, next: hostCandidates.count), on: connection)
 
         default:

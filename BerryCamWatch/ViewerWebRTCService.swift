@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import LiveKitWebRTC
 
@@ -5,17 +6,21 @@ import LiveKitWebRTC
 final class ViewerWebRTCService: NSObject, ObservableObject {
     @Published private(set) var remoteVideoTrack: RTCVideoTrack?
     @Published private(set) var connectionState = "Idle"
+    @Published private(set) var audioState = "Off"
     @Published private(set) var isWatching = false
 
     private var factory: RTCPeerConnectionFactory?
     private var peerConnection: RTCPeerConnection?
     private var signaling: SignalingClient?
     private var pollingTask: Task<Void, Never>?
+    private var localAudioTrack: RTCAudioTrack?
+    private var remoteAudioTrack: RTCAudioTrack?
 
     func connect(host: String, port: UInt16, accessCode: String) {
         disconnect()
         isWatching = true
         connectionState = "Connecting"
+        configureAudioSession()
 
         RTCInitializeSSL()
         let encoderFactory = RTCDefaultVideoEncoderFactory()
@@ -39,12 +44,21 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
             return
         }
 
+        localAudioTrack = factory.audioTrack(
+            with: factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)),
+            trackId: "berrycam-iphone-audio"
+        )
+        if let localAudioTrack {
+            peerConnection.add(localAudioTrack, streamIds: ["berrycam"])
+            audioState = "iPhone mic on"
+        }
+
         self.peerConnection = peerConnection
         self.signaling = SignalingClient(host: host, port: port, accessCode: accessCode)
 
         let offerConstraints = RTCMediaConstraints(
             mandatoryConstraints: [
-                kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueFalse,
+                kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
                 kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue,
             ],
             optionalConstraints: nil
@@ -83,8 +97,11 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         peerConnection = nil
         signaling = nil
         remoteVideoTrack = nil
+        localAudioTrack = nil
+        remoteAudioTrack = nil
         isWatching = false
         connectionState = "Idle"
+        audioState = "Off"
     }
 
     private func sendOffer(_ offer: RTCSessionDescription) {
@@ -124,6 +141,7 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
                     }
                 } catch {
                     await MainActor.run {
+                        guard self?.remoteVideoTrack == nil else { return }
                         self?.connectionState = "Polling failed"
                     }
                 }
@@ -136,6 +154,16 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
     private func fail(_ error: Error) {
         connectionState = connectionMessage(for: error)
         isWatching = false
+    }
+
+    private func configureAudioSession() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playAndRecord, mode: .videoChat, options: [.defaultToSpeaker, .allowBluetoothHFP])
+            try session.setActive(true)
+        } catch {
+            audioState = "Audio setup failed"
+        }
     }
 
     private func connectionMessage(for error: Error) -> String {
@@ -173,10 +201,14 @@ extension ViewerWebRTCService: RTCPeerConnectionDelegate {
     nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {}
     nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {}
     nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didAdd rtpReceiver: RTCRtpReceiver, streams: [RTCMediaStream]) {
-        guard let track = rtpReceiver.track as? RTCVideoTrack else { return }
         Task { @MainActor [weak self] in
-            self?.remoteVideoTrack = track
-            self?.connectionState = "Live"
+            if let track = rtpReceiver.track as? RTCVideoTrack {
+                self?.remoteVideoTrack = track
+                self?.connectionState = "Live"
+            } else if let track = rtpReceiver.track as? RTCAudioTrack {
+                self?.remoteAudioTrack = track
+                self?.audioState = "Two-way audio"
+            }
         }
     }
 }
