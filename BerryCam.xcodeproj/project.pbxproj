@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		007921A7D7BF9CBDE450B568 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42C28F16FED927C6266F768 /* CameraPreviewView.swift */; };
 		10A211B73023969693DFD3A5 /* ViewerWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */; };
 		22831C8A78750CA8C67548C5 /* SignalingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656603CE7C831CC94DA5FF5B /* SignalingModels.swift */; };
 		5144EBD60849A14E2FDD5E99 /* SignalingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D039012A7AA6E750A0E3649 /* SignalingServer.swift */; };
 		606E0192BA3D699FAE2D436A /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 0208176193B01B2446C5FB7F /* LiveKitWebRTC */; };
 		64A8AC0602A5A16887691464 /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 30BBA0FB0BF8E94A4759812A /* LiveKitWebRTC */; };
+		7B415D303C2EF3BE44810F69 /* CameraCaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D8A7646D8329119E151562 /* CameraCaptureController.swift */; };
 		7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */; };
 		7EA08AB69F8579CC818AD523 /* WebRTCAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */; };
 		8E4FC5EFB2FD1A6F8DA66A27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CC4BA317E781EC6432997 /* ContentView.swift */; };
@@ -26,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		02D8A7646D8329119E151562 /* CameraCaptureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureController.swift; sourceTree = "<group>"; };
 		18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostWebRTCService.swift; sourceTree = "<group>"; };
 		4F5CC4BA317E781EC6432997 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewerWebRTCService.swift; sourceTree = "<group>"; };
@@ -33,6 +36,7 @@
 		656603CE7C831CC94DA5FF5B /* SignalingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingModels.swift; sourceTree = "<group>"; };
 		84CB4B55E0A40B16A9628CC7 /* BerryCamMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BerryCamMac.entitlements; sourceTree = "<group>"; };
 		8D039012A7AA6E750A0E3649 /* SignalingServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingServer.swift; sourceTree = "<group>"; };
+		A42C28F16FED927C6266F768 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
 		B20E89D0F490DF746E2C7A45 /* BerryCamWatch.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BerryCamWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9D8C08427CBF2659E8BCA78 /* BerryCamMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BerryCamMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BerryCamMacApp.swift; sourceTree = "<group>"; };
@@ -67,6 +71,8 @@
 			children = (
 				84CB4B55E0A40B16A9628CC7 /* BerryCamMac.entitlements */,
 				C0A723DCBBD8906F04A12BD0 /* BerryCamMacApp.swift */,
+				02D8A7646D8329119E151562 /* CameraCaptureController.swift */,
+				A42C28F16FED927C6266F768 /* CameraPreviewView.swift */,
 				4F5CC4BA317E781EC6432997 /* ContentView.swift */,
 				18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */,
 				8D039012A7AA6E750A0E3649 /* SignalingServer.swift */,
@@ -207,6 +213,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E15090A3C7395E494C16C801 /* BerryCamMacApp.swift in Sources */,
+				7B415D303C2EF3BE44810F69 /* CameraCaptureController.swift in Sources */,
+				007921A7D7BF9CBDE450B568 /* CameraPreviewView.swift in Sources */,
 				8E4FC5EFB2FD1A6F8DA66A27 /* ContentView.swift in Sources */,
 				7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */,
 				DD4AD57B4E4743D3ED853090 /* SignalingModels.swift in Sources */,

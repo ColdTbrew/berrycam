@@ -2,19 +2,52 @@ import AVFoundation
 import Foundation
 import LiveKitWebRTC
 
+struct CameraOption: Identifiable, Hashable {
+    let id: String
+    let name: String
+}
+
 @MainActor
 final class HostWebRTCService: NSObject, ObservableObject {
     @Published private(set) var localVideoTrack: RTCVideoTrack?
+    @Published private(set) var captureSession: AVCaptureSession?
     @Published private(set) var connectionState = "Idle"
+    @Published private(set) var cameraOptions: [CameraOption] = []
+    @Published var selectedCameraID: String?
 
     var onLocalCandidate: ((RTCIceCandidate) -> Void)?
 
     private var peerConnection: RTCPeerConnection?
     private var factory: RTCPeerConnectionFactory?
-    private var videoCapturer: RTCCameraVideoCapturer?
+    private var captureController: CameraCaptureController?
+
+    override init() {
+        super.init()
+        refreshCameraOptions()
+    }
+
+    func refreshCameraOptions() {
+        var devices = RTCCameraVideoCapturer.captureDevices()
+        for device in AVCaptureDevice.DiscoverySession(
+            deviceTypes: [
+                .builtInWideAngleCamera,
+                .continuityCamera,
+                .external,
+            ],
+            mediaType: .video,
+            position: .unspecified
+        ).devices where !devices.contains(where: { $0.uniqueID == device.uniqueID }) {
+            devices.append(device)
+        }
+        cameraOptions = devices.map { CameraOption(id: $0.uniqueID, name: $0.localizedName) }
+        if selectedCameraID == nil || !cameraOptions.contains(where: { $0.id == selectedCameraID }) {
+            selectedCameraID = cameraOptions.first?.id
+        }
+    }
 
     func startCamera() {
         guard localVideoTrack == nil else { return }
+        refreshCameraOptions()
         RTCInitializeSSL()
 
         let encoderFactory = RTCDefaultVideoEncoderFactory()
@@ -23,20 +56,22 @@ final class HostWebRTCService: NSObject, ObservableObject {
         self.factory = factory
 
         let videoSource = factory.videoSource()
-        let capturer = RTCCameraVideoCapturer(delegate: videoSource)
-        videoCapturer = capturer
+        let captureController = CameraCaptureController(delegate: videoSource)
+        self.captureController = captureController
+        captureSession = captureController.session
 
         let track = factory.videoTrack(with: videoSource, trackId: "berrycam-video")
         localVideoTrack = track
-        startCapture(using: capturer)
+        startCapture(using: captureController)
     }
 
     func stop() {
         peerConnection?.close()
         peerConnection = nil
         localVideoTrack = nil
-        videoCapturer?.stopCapture()
-        videoCapturer = nil
+        captureSession = nil
+        captureController?.stop()
+        captureController = nil
         connectionState = "Idle"
     }
 
@@ -120,29 +155,34 @@ final class HostWebRTCService: NSObject, ObservableObject {
         }
     }
 
-    private func startCapture(using capturer: RTCCameraVideoCapturer) {
-        guard let device = RTCCameraVideoCapturer.captureDevices().first else {
+    private func startCapture(using captureController: CameraCaptureController) {
+        var devices = RTCCameraVideoCapturer.captureDevices()
+        for device in AVCaptureDevice.DiscoverySession(
+            deviceTypes: [
+                .builtInWideAngleCamera,
+                .continuityCamera,
+                .external,
+            ],
+            mediaType: .video,
+            position: .unspecified
+        ).devices where !devices.contains(where: { $0.uniqueID == device.uniqueID }) {
+            devices.append(device)
+        }
+        let selectedDevice = selectedCameraID.flatMap { selectedID in
+            devices.first { $0.uniqueID == selectedID }
+        }
+        guard let device = selectedDevice ?? devices.first else {
             connectionState = "No camera"
             return
         }
 
-        let formats = RTCCameraVideoCapturer.supportedFormats(for: device)
-        let format = formats
-            .sorted { lhs, rhs in
-                let left = CMVideoFormatDescriptionGetDimensions(lhs.formatDescription)
-                let right = CMVideoFormatDescriptionGetDimensions(rhs.formatDescription)
-                return left.width * left.height < right.width * right.height
+        captureController.start(device: device) { [weak self] error in
+            if let error {
+                self?.connectionState = "Camera error: \(error.localizedDescription)"
+            } else {
+                self?.connectionState = "Camera on: \(device.localizedName)"
             }
-            .last
-
-        guard let format else {
-            connectionState = "No camera format"
-            return
         }
-
-        let fps = min(30, Int(format.videoSupportedFrameRateRanges.first?.maxFrameRate ?? 30))
-        capturer.startCapture(with: device, format: format, fps: fps)
-        connectionState = "Camera on"
     }
 }
 

@@ -7,89 +7,131 @@ struct ContentView: View {
     @State private var portText = "3000"
 
     var body: some View {
-        HStack(spacing: 0) {
-            ZStack {
-                WebRTCVideoView(track: webRTC.localVideoTrack)
-                    .opacity(webRTC.localVideoTrack == nil ? 0 : 1)
-
-                if webRTC.localVideoTrack == nil {
-                    VStack(spacing: 12) {
-                        Image(systemName: "video")
-                            .font(.system(size: 54, weight: .semibold))
-                        Text("Camera preview")
-                            .font(.title2.weight(.bold))
-                    }
-                    .foregroundStyle(.white.opacity(0.78))
-                }
+        NavigationSplitView {
+            sidebar
+        } detail: {
+            previewPane
+        }
+        .navigationTitle("BerryCam")
+        .toolbar {
+            ToolbarItemGroup {
+                StatusBadge(title: "Signaling", value: signaling.isRunning ? "On" : "Off", isActive: signaling.isRunning)
+                StatusBadge(title: "Camera", value: webRTC.captureSession == nil ? "Off" : "On", isActive: webRTC.captureSession != nil)
             }
-            .frame(width: 760, height: 480)
-            .background(Color.black)
-            .clipped()
 
-            VStack(alignment: .leading, spacing: 18) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("BerryCam")
-                        .font(.largeTitle.weight(.bold))
-                    Text("Mac host over WebRTC")
-                        .foregroundStyle(.secondary)
-                }
-
-                LabeledContent("Access code") {
-                    SecureField("Access code", text: $accessCode)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 220)
-                }
-
-                LabeledContent("Port") {
-                    TextField("3000", text: $portText)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 90)
-                }
-
-                HStack {
-                    Button {
-                        start()
-                    } label: {
-                        Label("Start host", systemImage: "play.fill")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(signaling.isRunning)
-
+            ToolbarItem(placement: .primaryAction) {
+                if signaling.isRunning {
                     Button {
                         stop()
                     } label: {
-                        Label("Stop", systemImage: "stop.fill")
+                        Label("Stop Host", systemImage: "stop.fill")
                     }
-                    .disabled(!signaling.isRunning)
+                } else {
+                    Button {
+                        start()
+                    } label: {
+                        Label("Start Host", systemImage: "play.fill")
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
+            }
+        }
+        .frame(minWidth: 980, minHeight: 620)
+    }
 
-                Divider()
+    private var sidebar: some View {
+        Form {
+            Section("Host") {
+                SecureField("Access Code", text: $accessCode)
+                    .textContentType(.password)
 
-                StatRow(label: "Signaling", value: signaling.status)
-                StatRow(label: "WebRTC", value: webRTC.connectionState)
+                TextField("Port", text: $portText)
+                    .monospacedDigit()
+                    .frame(maxWidth: 120)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Use in iPhone app")
-                        .font(.headline)
+                Picker("Camera", selection: $webRTC.selectedCameraID) {
+                    ForEach(webRTC.cameraOptions) { camera in
+                        Text(camera.name).tag(Optional(camera.id))
+                    }
+                }
+                .disabled(webRTC.localVideoTrack != nil)
+
+                HStack {
+                    Button {
+                        webRTC.refreshCameraOptions()
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
+
+                    Spacer()
+
+                    if signaling.isRunning {
+                        Button(role: .destructive) {
+                            stop()
+                        } label: {
+                            Label("Stop", systemImage: "stop.fill")
+                        }
+                    } else {
+                        Button {
+                            start()
+                        } label: {
+                            Label("Start", systemImage: "play.fill")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
+                .buttonStyle(.bordered)
+            }
+
+            Section("Status") {
+                StatusRow(label: "Signaling", value: signaling.status)
+                StatusRow(label: "WebRTC", value: webRTC.connectionState)
+            }
+
+            Section("iPhone") {
+                if signaling.urls.isEmpty {
+                    Text("Start the host to show Tailscale and local addresses.")
+                        .foregroundStyle(.secondary)
+                } else {
                     ForEach(signaling.urls, id: \.self) { url in
-                        Text(url.replacingOccurrences(of: "http://", with: ""))
-                            .font(.system(.caption, design: .monospaced))
-                            .textSelection(.enabled)
-                            .padding(8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color(nsColor: .controlBackgroundColor))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        AddressRow(value: url.replacingOccurrences(of: "http://", with: ""))
                     }
                 }
+            }
+        }
+        .formStyle(.grouped)
+        .navigationSplitViewColumnWidth(min: 320, ideal: 360, max: 420)
+    }
 
-                Text("For travel, enter the MacBook Tailscale name or 100.x.y.z address in the iPhone app.")
-                    .font(.footnote)
+    private var previewPane: some View {
+        VStack(spacing: 0) {
+            ZStack {
+                CameraPreviewView(session: webRTC.captureSession)
+                    .opacity(webRTC.captureSession == nil ? 0 : 1)
+
+                if webRTC.captureSession == nil {
+                    ContentUnavailableView(
+                        "Camera Preview",
+                        systemImage: "video",
+                        description: Text("Choose a camera and start the host.")
+                    )
                     .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.black)
 
+            Divider()
+
+            HStack {
+                Label("Use the MacBook Tailscale name or 100.x.y.z address in the iPhone app.", systemImage: "network")
+                    .foregroundStyle(.secondary)
                 Spacer()
             }
-            .padding(24)
-            .frame(width: 410, height: 480)
+            .font(.footnote)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(.bar)
         }
     }
 
@@ -105,17 +147,51 @@ struct ContentView: View {
     }
 }
 
-private struct StatRow: View {
+private struct StatusBadge: View {
+    let title: String
+    let value: String
+    let isActive: Bool
+
+    var body: some View {
+        Label {
+            Text("\(title): \(value)")
+        } icon: {
+            Image(systemName: isActive ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(isActive ? .green : .secondary)
+        }
+        .font(.caption)
+        .labelStyle(.titleAndIcon)
+    }
+}
+
+private struct StatusRow: View {
     let label: String
     let value: String
 
     var body: some View {
-        HStack {
-            Text(label)
-                .foregroundStyle(.secondary)
-            Spacer()
+        LabeledContent(label) {
             Text(value)
-                .fontWeight(.semibold)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .multilineTextAlignment(.trailing)
+        }
+    }
+}
+
+private struct AddressRow: View {
+    let value: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: value.hasPrefix("100.") ? "network" : "wifi")
+                .foregroundStyle(.secondary)
+                .frame(width: 18)
+
+            Text(value)
+                .font(.system(.body, design: .monospaced))
+                .textSelection(.enabled)
+                .lineLimit(1)
+                .truncationMode(.middle)
         }
     }
 }

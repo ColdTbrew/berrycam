@@ -22,6 +22,11 @@ typealias RTCSignalingState = LKRTCSignalingState
 typealias RTCCameraVideoCapturer = LKRTCCameraVideoCapturer
 typealias RTCVideoRenderer = LKRTCVideoRenderer
 typealias RTCVideoTrack = LKRTCVideoTrack
+typealias RTCCVPixelBuffer = LKRTCCVPixelBuffer
+typealias RTCVideoCapturer = LKRTCVideoCapturer
+typealias RTCVideoCapturerDelegate = LKRTCVideoCapturerDelegate
+typealias RTCVideoFrame = LKRTCVideoFrame
+typealias RTCVideoRotation = LKRTCVideoRotation
 
 #if os(iOS)
 typealias RTCMTLVideoView = LKRTCMTLVideoView
