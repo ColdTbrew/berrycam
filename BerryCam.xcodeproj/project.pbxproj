@@ -33,6 +33,7 @@
 		02D8A7646D8329119E151562 /* CameraCaptureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureController.swift; sourceTree = "<group>"; };
 		18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostWebRTCService.swift; sourceTree = "<group>"; };
 		4F5CC4BA317E781EC6432997 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		520A8940B92E4BAF03BB7559 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewerWebRTCService.swift; sourceTree = "<group>"; };
 		5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BerryCamWatchApp.swift; sourceTree = "<group>"; };
 		656603CE7C831CC94DA5FF5B /* SignalingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingModels.swift; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 				EC6F864EA608F657EC2AE3D0 /* Assets.xcassets */,
 				5FC4095CD85C79DBC453959B /* BerryCamWatchApp.swift */,
 				D343F906E58458C77082116A /* ContentView.swift */,
+				520A8940B92E4BAF03BB7559 /* Info.plist */,
 				FF2C168448AE5AAFC831E4A5 /* SignalingClient.swift */,
 				585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */,
 			);
@@ -343,14 +345,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K44PM3Z3K7;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam connects to your Mac through Tailscale or your local network.";
-				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_FILE = BerryCamWatch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -386,14 +381,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K44PM3Z3K7;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "BerryCam connects to your Mac through Tailscale or your local network.";
-				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_FILE = BerryCamWatch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

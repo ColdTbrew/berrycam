@@ -42,6 +42,24 @@ targets:
     sources:
       - BerryCamWatch
       - Shared
+    info:
+      path: BerryCamWatch/Info.plist
+      properties:
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
+        NSSupportsLiveActivities: false
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
     dependencies:
       - package: LiveKitWebRTC
     settings:
@@ -49,11 +67,3 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.coldtbrew.BerryCamWatch
         DEVELOPMENT_TEAM: K44PM3Z3K7
         CODE_SIGN_STYLE: Automatic
-        GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
-        INFOPLIST_KEY_UIRequiresFullScreen: true
-        INFOPLIST_KEY_UILaunchScreen_Generation: true
-        INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
-        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
-        INFOPLIST_KEY_NSSupportsLiveActivities: false
-        INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: true
