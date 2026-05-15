@@ -72,21 +72,22 @@ struct ContentView: View {
                 )
                 .foregroundStyle(.white.secondary)
             }
-        }
-        .toolbarBackground(.hidden, for: .navigationBar)
-        .safeAreaInset(edge: .bottom) {
+
             Button {
                 viewer.disconnect()
             } label: {
                 Label("Disconnect", systemImage: "stop.fill")
-                    .frame(maxWidth: .infinity)
+                    .font(.callout.weight(.semibold))
+                    .foregroundStyle(.red)
+                    .padding(8)
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(.red)
-            .padding()
-            .background(.thinMaterial)
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(.top, 10)
+            .padding(.leading, 12)
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
     }
 
     private var statusBadge: some View {
