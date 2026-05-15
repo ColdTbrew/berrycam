@@ -50,5 +50,6 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
         INFOPLIST_KEY_UIRequiresFullScreen: true
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
         INFOPLIST_KEY_NSSupportsLiveActivities: false
         INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: true

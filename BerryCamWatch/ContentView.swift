@@ -7,7 +7,57 @@ struct ContentView: View {
     @State private var accessCode = "berrycam"
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        NavigationStack {
+            Group {
+                if viewer.isWatching {
+                    watchingView
+                } else {
+                    setupView
+                }
+            }
+            .navigationTitle("BerryCam")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    statusBadge
+                }
+            }
+        }
+    }
+
+    private var setupView: some View {
+        Form {
+            Section {
+                TextField("Mac Tailscale host", text: $host)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.URL)
+
+                TextField("Port", text: $port)
+                    .keyboardType(.numberPad)
+
+                SecureField("Access code", text: $accessCode)
+            } header: {
+                Text("Host")
+            } footer: {
+                Text("Use the Mac's Tailscale name or 100.x.y.z address.")
+            }
+
+            Section {
+                Button {
+                    viewer.connect(host: host, port: UInt16(port) ?? 3000, accessCode: accessCode)
+                } label: {
+                    Label("Connect", systemImage: "play.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            }
+        }
+    }
+
+    private var watchingView: some View {
+        ZStack {
             Color.black.ignoresSafeArea()
 
             WebRTCVideoView(track: viewer.remoteVideoTrack)
@@ -15,59 +65,50 @@ struct ContentView: View {
                 .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
 
             if viewer.remoteVideoTrack == nil {
-                VStack(spacing: 12) {
-                    Image(systemName: "cat")
-                        .font(.system(size: 54, weight: .semibold))
-                    Text("Waiting for BerryCam")
-                        .font(.title2.weight(.bold))
-                }
-                .foregroundStyle(.white.opacity(0.76))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                ContentUnavailableView(
+                    "Waiting for Video",
+                    systemImage: "video",
+                    description: Text("BerryCam is connected and waiting for the Mac camera stream.")
+                )
+                .foregroundStyle(.white.secondary)
             }
-
-            VStack(alignment: .leading, spacing: 14) {
-                HStack {
-                    Text("BerryCam")
-                        .font(.title2.weight(.bold))
-                    Spacer()
-                    Text(viewer.connectionState)
-                        .font(.caption.weight(.bold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(.green.opacity(0.82))
-                        .clipShape(Capsule())
-                }
-
-                if !viewer.isWatching {
-                    TextField("Mac Tailscale host", text: $host)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                    TextField("Port", text: $port)
-                        .keyboardType(.numberPad)
-                    SecureField("Access code", text: $accessCode)
-
-                    Button {
-                        viewer.connect(host: host, port: UInt16(port) ?? 3000, accessCode: accessCode)
-                    } label: {
-                        Label("Connect", systemImage: "play.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                } else {
-                    Button {
-                        viewer.disconnect()
-                    } label: {
-                        Label("Disconnect", systemImage: "stop.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                }
+        }
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                viewer.disconnect()
+            } label: {
+                Label("Disconnect", systemImage: "stop.fill")
+                    .frame(maxWidth: .infinity)
             }
-            .textFieldStyle(.roundedBorder)
-            .padding(16)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-            .padding(16)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(.red)
+            .padding()
+            .background(.thinMaterial)
+        }
+    }
+
+    private var statusBadge: some View {
+        Text(viewer.connectionState)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(statusColor)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(statusColor.opacity(0.14), in: Capsule())
+            .accessibilityLabel("Connection status \(viewer.connectionState)")
+    }
+
+    private var statusColor: Color {
+        switch viewer.connectionState.lowercased() {
+        case "connected", "watching":
+            .green
+        case "connecting", "checking":
+            .orange
+        case "failed", "disconnected", "closed":
+            .red
+        default:
+            .secondary
         }
     }
 }

@@ -30,7 +30,7 @@ struct ContentView: View {
                 }
             }
         }
-        .frame(minWidth: 980, minHeight: 620)
+        .frame(minWidth: 720, minHeight: 480)
     }
 
     private var sidebar: some View {
@@ -94,38 +94,42 @@ struct ContentView: View {
             }
         }
         .formStyle(.grouped)
-        .navigationSplitViewColumnWidth(min: 320, ideal: 360, max: 420)
+        .navigationSplitViewColumnWidth(min: 260, ideal: 320, max: 380)
     }
 
     private var previewPane: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                CameraPreviewView(session: webRTC.captureSession)
-                    .opacity(webRTC.captureSession == nil ? 0 : 1)
+        GeometryReader { proxy in
+            VStack(spacing: 0) {
+                ZStack {
+                    CameraPreviewView(session: webRTC.captureSession)
+                        .opacity(webRTC.captureSession == nil ? 0 : 1)
 
-                if webRTC.captureSession == nil {
-                    ContentUnavailableView(
-                        "Camera Preview",
-                        systemImage: "video",
-                        description: Text("Choose a camera and start the host.")
-                    )
-                    .foregroundStyle(.secondary)
+                    if webRTC.captureSession == nil {
+                        ContentUnavailableView(
+                            "Camera Preview",
+                            systemImage: "video",
+                            description: Text("Choose a camera and start the host.")
+                        )
+                        .foregroundStyle(.secondary)
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.black)
+                .frame(width: proxy.size.width, height: max(0, proxy.size.height - 38))
+                .background(.black)
 
-            Divider()
+                Divider()
 
-            HStack {
-                Label("Use the MacBook Tailscale name or 100.x.y.z address in the iPhone app.", systemImage: "network")
-                    .foregroundStyle(.secondary)
-                Spacer()
+                HStack {
+                    Label("Use the MacBook Tailscale name or 100.x.y.z address in the iPhone app.", systemImage: "network")
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Spacer()
+                }
+                .font(.footnote)
+                .padding(.horizontal, 16)
+                .frame(height: 37)
+                .background(.bar)
             }
-            .font(.footnote)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(.bar)
         }
     }
 

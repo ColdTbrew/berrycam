@@ -20,7 +20,7 @@ final class PreviewHostView: NSView {
         super.init(frame: frameRect)
         wantsLayer = true
         layer = previewLayer
-        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspect
     }
 
     required init?(coder: NSCoder) {
