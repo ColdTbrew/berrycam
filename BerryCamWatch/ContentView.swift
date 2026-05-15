@@ -5,6 +5,7 @@ struct ContentView: View {
     @State private var host = ""
     @State private var port = "3000"
     @State private var accessCode = "berrycam"
+    @State private var microphoneEnabled = true
     @State private var connectionAlert: ConnectionAlert?
 
     var body: some View {
@@ -36,34 +37,59 @@ struct ContentView: View {
     }
 
     private var setupView: some View {
-        Form {
-            Section {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                Text("Host")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
+
+                VStack(spacing: 0) {
                 TextField("Mac Tailscale host", text: $host)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .keyboardType(.URL)
+                    .textContentType(.URL)
+                    .padding(.vertical, 13)
+
+                    Divider()
 
                 TextField("Port", text: $port)
                     .keyboardType(.numberPad)
+                    .padding(.vertical, 13)
+
+                    Divider()
 
                 SecureField("Access code", text: $accessCode)
-            } header: {
-                Text("Host")
-            } footer: {
-                Text("Use the Mac's Tailscale name or 100.x.y.z address shown in BerryCam Mac.")
-            }
+                    .padding(.vertical, 13)
 
-            Section {
+                    Divider()
+
+                    Toggle(isOn: $microphoneEnabled) {
+                        Label("Microphone", systemImage: microphoneEnabled ? "mic.fill" : "mic.slash.fill")
+                    }
+                    .padding(.vertical, 11)
+                }
+                .font(.body)
+                .padding(.horizontal, 16)
+                .background(.background, in: RoundedRectangle(cornerRadius: 8))
+
+                Text("Use the Mac's Tailscale name or 100.x.y.z address shown in BerryCam Mac.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 Button {
                     connect()
                 } label: {
-                    Label("Connect", systemImage: "play.fill")
+                    Text("Connect")
+                        .font(.headline.weight(.semibold))
                         .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
+                        .frame(height: 50)
                 }
                 .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .frame(maxWidth: .infinity, alignment: .center)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding(.top, 8)
 
                 if viewer.connectionState != "Idle" {
                     Text(viewer.connectionState)
@@ -73,8 +99,10 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                 }
             }
-            .listRowInsets(EdgeInsets(top: 18, leading: 36, bottom: 18, trailing: 36))
+            .padding(.horizontal, 24)
+            .padding(.bottom, 24)
         }
+        .background(Color(.systemGroupedBackground))
     }
 
     private var watchingView: some View {
@@ -96,10 +124,23 @@ struct ContentView: View {
 
             VStack {
                 Spacer()
-                Text(viewer.audioState)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.white.secondary)
-                    .padding(.bottom, 14)
+                HStack(spacing: 10) {
+                    Button {
+                        viewer.setMicrophoneEnabled(!viewer.isMicrophoneEnabled)
+                    } label: {
+                        Label(
+                            viewer.isMicrophoneEnabled ? "Mic On" : "Mic Off",
+                            systemImage: viewer.isMicrophoneEnabled ? "mic.fill" : "mic.slash.fill"
+                        )
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(viewer.isMicrophoneEnabled ? .green : .red)
+
+                    Text(viewer.audioState)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white.secondary)
+                }
+                .padding(.bottom, 14)
             }
 
             Button {
@@ -157,7 +198,12 @@ struct ContentView: View {
         }
 
         host = normalizedHost
-        viewer.connect(host: normalizedHost, port: UInt16(port) ?? 3000, accessCode: accessCode)
+        viewer.connect(
+            host: normalizedHost,
+            port: UInt16(port) ?? 3000,
+            accessCode: accessCode,
+            microphoneEnabled: microphoneEnabled
+        )
     }
 }
 

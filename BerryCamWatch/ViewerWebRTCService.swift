@@ -7,6 +7,7 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
     @Published private(set) var remoteVideoTrack: RTCVideoTrack?
     @Published private(set) var connectionState = "Idle"
     @Published private(set) var audioState = "Off"
+    @Published private(set) var isMicrophoneEnabled = true
     @Published private(set) var isWatching = false
 
     private var factory: RTCPeerConnectionFactory?
@@ -16,11 +17,14 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
     private var localAudioTrack: RTCAudioTrack?
     private var remoteAudioTrack: RTCAudioTrack?
 
-    func connect(host: String, port: UInt16, accessCode: String) {
+    func connect(host: String, port: UInt16, accessCode: String, microphoneEnabled: Bool) {
         disconnect()
         isWatching = true
         connectionState = "Connecting"
-        configureAudioSession()
+        setMicrophoneEnabled(microphoneEnabled)
+        if microphoneEnabled {
+            configureAudioSession()
+        }
 
         RTCInitializeSSL()
         let encoderFactory = RTCDefaultVideoEncoderFactory()
@@ -44,13 +48,17 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
             return
         }
 
-        localAudioTrack = factory.audioTrack(
-            with: factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)),
-            trackId: "berrycam-iphone-audio"
-        )
-        if let localAudioTrack {
-            peerConnection.add(localAudioTrack, streamIds: ["berrycam"])
-            audioState = "iPhone mic on"
+        if microphoneEnabled {
+            localAudioTrack = factory.audioTrack(
+                with: factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)),
+                trackId: "berrycam-iphone-audio"
+            )
+            if let localAudioTrack {
+                peerConnection.add(localAudioTrack, streamIds: ["berrycam"])
+                audioState = "Mic on"
+            }
+        } else {
+            audioState = "Mic off"
         }
 
         self.peerConnection = peerConnection
@@ -102,6 +110,12 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         isWatching = false
         connectionState = "Idle"
         audioState = "Off"
+    }
+
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        isMicrophoneEnabled = enabled
+        localAudioTrack?.isEnabled = enabled
+        audioState = enabled ? "Mic on" : "Mic off"
     }
 
     private func sendOffer(_ offer: RTCSessionDescription) {
