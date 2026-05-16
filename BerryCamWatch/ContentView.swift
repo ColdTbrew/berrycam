@@ -11,7 +11,6 @@ struct ContentView: View {
     @State private var microphoneEnabled = false
     @State private var connectionAlert: ConnectionAlert?
     @State private var isShowingHistory = false
-    @State private var isHistoryExpanded = true
 
     var body: some View {
         NavigationStack {
@@ -193,39 +192,18 @@ struct ContentView: View {
             } else {
                 VStack(spacing: 0) {
                     liveVideoPane
-                        .frame(height: portraitVideoHeight(in: proxy.size, historyExpanded: isHistoryExpanded))
+                        .frame(height: portraitVideoHeight(in: proxy.size))
                         .clipped()
 
-                    if isHistoryExpanded {
-                        Divider()
+                    Divider()
 
-                        InlineDetectionHistoryView(
-                            viewer: viewer,
-                            collapseHistory: {
-                                withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
-                                    isHistoryExpanded = false
-                                }
-                            }
-                        )
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                    }
+                    InlineDetectionHistoryView(viewer: viewer)
                 }
                 .background(Color(.systemBackground))
-                .contentShape(Rectangle())
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 28)
-                        .onEnded { value in
-                            guard value.translation.height < -44 else { return }
-                            withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
-                                isHistoryExpanded = true
-                            }
-                        }
-                )
             }
         }
         .toolbarBackground(.hidden, for: .navigationBar)
         .animation(.spring(response: 0.28, dampingFraction: 0.86), value: viewer.liveDetectionEvent?.id)
-        .animation(.spring(response: 0.34, dampingFraction: 0.88), value: isHistoryExpanded)
     }
 
     private var liveVideoPane: some View {
@@ -291,11 +269,8 @@ struct ContentView: View {
         .background(.black)
     }
 
-    private func portraitVideoHeight(in size: CGSize, historyExpanded: Bool) -> CGFloat {
-        if historyExpanded {
-            return min(size.height * 0.48, max(300, size.width * 0.96))
-        }
-        return size.height
+    private func portraitVideoHeight(in size: CGSize) -> CGFloat {
+        max(220, size.width * 9 / 16)
     }
 
     private var statusBadge: some View {
@@ -414,7 +389,6 @@ private struct DetectionHistoryView: View {
 
 private struct InlineDetectionHistoryView: View {
     @ObservedObject var viewer: ViewerWebRTCService
-    let collapseHistory: () -> Void
     @State private var selectedEvent: CatDetectionEventPayload?
 
     var body: some View {
@@ -467,13 +441,6 @@ private struct InlineDetectionHistoryView: View {
                 .refreshable {
                     viewer.refreshDetectionEvents()
                 }
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 28)
-                        .onEnded { value in
-                            guard value.translation.height > 44 else { return }
-                            collapseHistory()
-                        }
-                )
             }
         }
         .task {
