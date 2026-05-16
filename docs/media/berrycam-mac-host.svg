@@ -1,0 +1,49 @@
+<svg width="1120" height="760" viewBox="0 0 1120 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1120" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9F4EA"/>
+      <stop offset="1" stop-color="#FFF0DE"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="26" stdDeviation="22" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <rect width="1120" height="760" rx="36" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <rect x="120" y="78" width="880" height="540" rx="28" fill="#303233"/>
+    <rect x="145" y="118" width="830" height="474" rx="18" fill="#232526"/>
+    <circle cx="174" cy="98" r="8" fill="#FF5F57"/>
+    <circle cx="201" cy="98" r="8" fill="#FFBD2E"/>
+    <circle cx="228" cy="98" r="8" fill="#28C840"/>
+    <text x="156" y="164" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="900" fill="#F7F7F4">BerryCam Mac</text>
+    <rect x="156" y="196" width="518" height="320" rx="18" fill="#FFF8ED"/>
+    <path d="M184 468C275 392 381 396 468 468C540 526 601 489 650 430" stroke="#CAB99F" stroke-width="18" stroke-linecap="round"/>
+    <rect x="501" y="238" width="112" height="72" rx="12" fill="#E7D7C3"/>
+    <g transform="translate(326 276)">
+      <ellipse cx="86" cy="146" rx="82" ry="23" fill="#000" opacity="0.13"/>
+      <path d="M46 57L29 15L78 41L46 57Z" fill="#C96F38"/>
+      <path d="M133 57L150 15L101 41L133 57Z" fill="#C96F38"/>
+      <path d="M38 62C45 24 127 24 140 62C158 77 166 105 161 130C153 169 125 190 91 190C57 190 29 169 21 130C16 105 21 77 38 62Z" fill="#E8954E"/>
+      <path d="M56 65C70 50 108 49 124 65C120 90 108 102 91 102C74 102 61 90 56 65Z" fill="#F8C97D"/>
+      <circle cx="66" cy="97" r="9" fill="#151617"/>
+      <circle cx="117" cy="97" r="9" fill="#151617"/>
+      <path d="M90 111L81 123H100L90 111Z" fill="#3E2418"/>
+      <path d="M90 124C82 134 70 135 61 128M92 124C101 134 113 135 122 128" stroke="#3E2418" stroke-width="4" stroke-linecap="round"/>
+      <path d="M23 112H-6M27 126H0M157 112H186M153 126H180" stroke="#4A2B1D" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <rect x="700" y="196" width="244" height="320" rx="18" fill="#343638"/>
+    <text x="730" y="242" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="900" fill="#F7F7F4">Cat AI</text>
+    <rect x="730" y="270" width="184" height="48" rx="24" fill="#1F8A49"/>
+    <text x="782" y="301" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="900" fill="#FFFFFF">Detect Cats</text>
+    <line x1="730" y1="346" x2="914" y2="346" stroke="#4C4E50" stroke-width="2"/>
+    <text x="730" y="386" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="800" fill="#D9D9D7">Vision</text>
+    <text x="850" y="386" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="800" fill="#22C55E">Cat</text>
+    <text x="730" y="434" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="800" fill="#D9D9D7">Events</text>
+    <text x="878" y="434" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="900" fill="#F7F7F4">18</text>
+    <text x="730" y="478" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="800" fill="#F7F7F4">Cat detected</text>
+    <text x="870" y="478" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="900" fill="#A7A7A7">92%</text>
+    <rect x="156" y="536" width="788" height="36" rx="18" fill="#171819"/>
+    <text x="184" y="560" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" font-weight="800" fill="#22C55E">Host running on private network</text>
+  </g>
+  <rect x="360" y="648" width="400" height="34" rx="17" fill="#2B2C2D" opacity="0.28"/>
+</svg>

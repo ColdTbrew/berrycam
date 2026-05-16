@@ -1,0 +1,68 @@
+<svg width="920" height="1260" viewBox="0 0 920 1260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="phone" x1="92" y1="52" x2="829" y2="1202" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#202326"/>
+      <stop offset="1" stop-color="#0A0B0C"/>
+    </linearGradient>
+    <linearGradient id="room" x1="170" y1="230" x2="750" y2="676" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF9F0"/>
+      <stop offset="1" stop-color="#D7EDE1"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-10%" width="140%" height="125%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="30" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="920" height="1260" rx="46" fill="#F1F3F0"/>
+  <g filter="url(#shadow)">
+    <rect x="122" y="40" width="676" height="1180" rx="80" fill="url(#phone)"/>
+    <rect x="150" y="75" width="620" height="1110" rx="58" fill="#FFFFFF"/>
+    <rect x="360" y="92" width="200" height="38" rx="19" fill="#08090A"/>
+    <text x="192" y="198" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="34" font-weight="900" fill="#08090A">BerryCam</text>
+    <rect x="550" y="158" width="166" height="58" rx="29" fill="#F3F4F2" stroke="#E6E6E2" stroke-width="2"/>
+    <circle cx="583" cy="187" r="18" fill="none" stroke="#111" stroke-width="8"/>
+    <path d="M583 174V188H598" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="620" y="196" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="21" font-weight="900" fill="#22C55E">Live</text>
+    <rect x="150" y="245" width="620" height="360" fill="url(#room)"/>
+    <rect x="150" y="245" width="620" height="58" fill="#FFFFFF"/>
+    <text x="190" y="284" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="900" fill="#FF3941">Disconnect</text>
+    <rect x="170" y="279" width="20" height="20" rx="4" fill="#FF3941"/>
+    <rect x="150" y="550" width="620" height="55" fill="#FFFFFF"/>
+    <rect x="312" y="560" width="158" height="40" rx="20" fill="#FFE2E4"/>
+    <text x="362" y="587" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="900" fill="#FF3941">Mic Off</text>
+    <path d="M216 488C292 444 357 445 426 492C497 541 614 517 710 454" stroke="#C3AE91" stroke-width="17" stroke-linecap="round"/>
+    <rect x="578" y="305" width="98" height="70" rx="12" fill="#D9C8AF"/>
+    <rect x="596" y="329" width="62" height="7" rx="3.5" fill="#9E8C74"/>
+    <g transform="translate(332 338)">
+      <ellipse cx="90" cy="150" rx="88" ry="26" fill="#000" opacity="0.12"/>
+      <path d="M49 58L31 14L82 42L49 58Z" fill="#D88743"/>
+      <path d="M139 58L157 14L106 42L139 58Z" fill="#D88743"/>
+      <path d="M42 64C49 25 133 25 146 64C165 78 174 108 168 132C160 173 130 194 96 194C61 194 32 173 24 132C18 107 24 79 42 64Z" fill="#F1A85A"/>
+      <path d="M60 67C75 50 114 50 130 67C126 92 113 104 96 104C77 104 65 92 60 67Z" fill="#F9C879"/>
+      <circle cx="69" cy="100" r="9" fill="#1B1C1E"/>
+      <circle cx="123" cy="100" r="9" fill="#1B1C1E"/>
+      <path d="M94 113L85 125H105L94 113Z" fill="#3E2418"/>
+      <path d="M94 126C85 137 72 137 64 130M96 126C105 137 118 137 126 130" stroke="#3E2418" stroke-width="4" stroke-linecap="round"/>
+      <path d="M25 115H-6M29 130H1M166 115H197M162 130H191" stroke="#4A2B1D" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <rect x="150" y="605" width="620" height="580" fill="#FAFAF8"/>
+    <text x="210" y="670" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="31" font-weight="900" fill="#08090A">Cat History</text>
+    <circle cx="184" cy="658" r="16" fill="none" stroke="#08090A" stroke-width="7"/>
+    <path d="M184 647V660H197" stroke="#08090A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <g>
+      <rect x="182" y="716" width="96" height="72" rx="12" fill="#F5C16F"/>
+      <circle cx="230" cy="751" r="24" fill="#D88743"/>
+      <text x="304" y="748" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="900" fill="#08090A">Cat detected</text>
+      <text x="304" y="782" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="22" font-weight="700" fill="#7D7F82">May 16, 2026 at 3:37 PM</text>
+      <line x1="304" y1="822" x2="704" y2="822" stroke="#E3E3DF" stroke-width="2"/>
+    </g>
+    <g>
+      <rect x="182" y="862" width="96" height="72" rx="12" fill="#BEEAD3"/>
+      <circle cx="230" cy="897" r="24" fill="#2DCE75"/>
+      <text x="304" y="894" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="900" fill="#08090A">Movement</text>
+      <text x="304" y="928" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="22" font-weight="700" fill="#7D7F82">81% confidence</text>
+      <line x1="304" y1="968" x2="704" y2="968" stroke="#E3E3DF" stroke-width="2"/>
+    </g>
+    <rect x="520" y="1016" width="156" height="72" rx="36" fill="#111315"/>
+    <text x="567" y="1061" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="900" fill="#FFFFFF">PiP</text>
+  </g>
+</svg>

@@ -1,26 +1,49 @@
 # BerryCam
 
-BerryCam is a native Swift pet monitor for watching a cat at home while traveling.
+![BerryCam native cat monitor](docs/media/berrycam-hero.svg)
 
-The Mac app hosts the MacBook camera and runs a tiny local signaling server. The iPhone app connects to the Mac over Tailscale and receives the live camera feed through WebRTC.
+BerryCam is a native Swift pet monitor for keeping an eye on a cat at home from an iPhone or Mac. The Mac app hosts the camera, runs lightweight cat detection, stores timestamped detection snapshots, and streams live video to iOS through WebRTC.
+
+The project is intentionally private-network first: use Tailscale or a local network address, keep the Mac at home as the host, and connect from the iPhone viewer without exposing the camera to the public internet.
+
+## App Screens
+
+The images below are documentation mockups made with generated cat artwork, not real webcam captures.
+
+| iOS viewer | macOS host |
+| --- | --- |
+| ![BerryCam iOS viewer with cat history](docs/media/berrycam-ios-viewer.svg) | ![BerryCam macOS host with cat AI panel](docs/media/berrycam-mac-host.svg) |
+
+## Features
+
+- Native WebRTC live video from Mac to iPhone.
+- iOS Picture in Picture support for keeping the stream visible after going Home.
+- Lightweight cat detection on the Mac host.
+- Detection history with timestamps, confidence, and snapshot thumbnails.
+- Snapshot detail viewer with swipe navigation and save-to-Photos.
+- Recent iPhone connection hosts for quick reconnects.
+- Private access code for pairing a viewer to the host.
+- Microphone defaults to off, with optional two-way audio.
 
 ## Architecture
 
 - `BerryCamMac`: macOS SwiftUI host app
-  - Captures the MacBook camera with WebRTC's native camera capturer.
-  - Runs an HTTP signaling server on the selected port.
-  - Answers one iPhone WebRTC offer at a time.
+  - Captures the Mac camera with WebRTC's native camera capturer.
+  - Runs the local HTTP signaling and history server.
+  - Runs cat detection and stores bounded event snapshots.
+  - Answers one viewer WebRTC offer at a time.
 - `BerryCamWatch`: iOS SwiftUI viewer app
-  - Connects to the Mac's Tailscale host or `100.x.y.z` address.
-  - Creates a receive-only WebRTC offer.
+  - Connects to the Mac's Tailscale host, local IP, or `100.x.y.z` address.
+  - Creates a receive-only WebRTC offer for video and audio.
   - Renders the remote video track natively.
-- `Shared`: small WebRTC signaling models and SwiftUI video view wrappers.
+  - Shows inline history below the live view and supports PiP.
+- `Shared`: WebRTC aliases, signaling models, detection models, and cross-platform video view wrappers.
 
 ## Why WebRTC
 
-BerryCam uses WebRTC as the main and only streaming path. It is the right fit for low-latency live video, and Tailscale gives both devices a private address without exposing the MacBook to the public internet.
+BerryCam uses WebRTC as the main streaming path because it is a strong fit for low-latency live video. The Mac and iPhone exchange SDP and ICE candidates through a tiny local signaling API, then WebRTC carries the media stream directly.
 
-The project follows the same broad pattern used by native WebRTC demos such as `stasel/WebRTC-iOS`: exchange SDP and ICE candidates through signaling, then let WebRTC carry the media directly.
+Tailscale gives both devices stable private addresses, which keeps the setup simple while avoiding a public camera endpoint.
 
 ## Setup
 
@@ -41,31 +64,33 @@ xcodegen generate
 5. Let Xcode resolve the Swift Package dependency:
 
 ```text
-https://github.com/stasel/WebRTC.git
+https://github.com/livekit/webrtc-xcframework.git
 ```
 
 ## Travel Flow
 
-1. Install Tailscale on the MacBook and iPhone.
+1. Install Tailscale on the Mac and iPhone.
 2. Sign in to the same Tailscale account on both devices.
-3. Start `BerryCamMac` on the MacBook.
+3. Start `BerryCamMac` on the Mac.
 4. Enter a private access code and start the host.
-5. In `BerryCamWatch`, enter:
+5. In `BerryCamWatch`, select a recent host or enter:
 
 ```text
-MacBook Tailscale name or 100.x.y.z
+Mac Tailscale name, local IP, or 100.x.y.z
 ```
 
 6. Use the same access code and connect.
+7. After live video starts, go Home on iPhone to continue watching with native PiP.
 
-## MacBook Checklist
+## Mac Checklist
 
-- Plug the MacBook into power.
+- Plug the Mac into power.
 - Disable sleep while plugged in.
 - Keep the lid open so the camera remains available.
 - Test from iPhone cellular data before leaving.
 - Use a private access code.
+- Periodically review detection history storage if the host runs for many days.
 
 ## Current Status
 
-This is an early native WebRTC implementation. The Xcode project is generated with XcodeGen, and the app code is structured around a Mac-hosted signaling server plus native iOS/macOS WebRTC peers.
+BerryCam is an MVP native WebRTC implementation with real-time cat detection, timestamped history, snapshots, iOS PiP, and native SwiftUI apps for macOS and iOS.
