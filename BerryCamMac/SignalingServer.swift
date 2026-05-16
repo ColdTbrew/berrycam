@@ -12,6 +12,7 @@ final class SignalingServer: ObservableObject {
 
     var onOffer: ((RTCSessionDescription, @escaping (Result<RTCSessionDescription, Error>) -> Void) -> Void)?
     var onRemoteCandidate: ((RTCIceCandidate) -> Void)?
+    var detectionStore: DetectionEventStore?
 
     private var listener: NWListener?
     private var accessCode = "berrycam"
@@ -98,6 +99,43 @@ final class SignalingServer: ObservableObject {
         switch (request.method, request.path) {
         case ("GET", "/health"):
             sendJSON(["ok": true, "running": isRunning], on: connection)
+
+        case ("GET", "/events"):
+            guard request.query["code"] == accessCode else {
+                send(status: 401, body: #"{"error":"invalid code"}"#, on: connection)
+                return
+            }
+            sendJSON(detectionStore?.events ?? [], on: connection)
+
+        case ("DELETE", let path) where path.hasPrefix("/events/"):
+            guard request.query["code"] == accessCode else {
+                send(status: 401, body: #"{"error":"invalid code"}"#, on: connection)
+                return
+            }
+            let idString = String(path.dropFirst("/events/".count))
+            guard
+                let id = UUID(uuidString: idString),
+                detectionStore?.deleteEvent(id: id) == true
+            else {
+                send(status: 404, body: #"{"error":"event not found"}"#, on: connection)
+                return
+            }
+            sendJSON(["ok": true], on: connection)
+
+        case ("GET", let path) where path.hasPrefix("/snapshots/"):
+            guard request.query["code"] == accessCode else {
+                send(status: 401, body: #"{"error":"invalid code"}"#, on: connection)
+                return
+            }
+            let filename = String(path.dropFirst("/snapshots/".count))
+            guard
+                !filename.isEmpty,
+                let data = detectionStore?.snapshotData(filename: filename)
+            else {
+                send(status: 404, body: #"{"error":"snapshot not found"}"#, on: connection)
+                return
+            }
+            send(status: 200, bodyData: data, contentType: "image/jpeg", on: connection)
 
         case ("POST", "/offer"):
             guard
@@ -230,7 +268,7 @@ private struct HTTPRequest {
 
 private enum NetworkAddresses {
     static func httpURLs(port: UInt16) -> [String] {
-        var urls = ["http://localhost:\(port)"]
+        var urls: [String] = []
         var addresses: UnsafeMutablePointer<ifaddrs>?
 
         if getifaddrs(&addresses) == 0 {

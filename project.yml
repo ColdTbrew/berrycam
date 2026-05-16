@@ -51,6 +51,7 @@ targets:
           NSAllowsArbitraryLoads: true
         NSLocalNetworkUsageDescription: BerryCam connects to your Mac through Tailscale or your local network.
         NSMicrophoneUsageDescription: BerryCam uses the iPhone microphone for two-way audio with your Mac.
+        NSPhotoLibraryAddUsageDescription: BerryCam saves cat detection snapshots to your photo library when you choose Save.
         NSSupportsLiveActivities: false
         UILaunchScreen: {}
         UIRequiresFullScreen: true

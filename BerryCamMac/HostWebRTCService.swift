@@ -18,6 +18,7 @@ final class HostWebRTCService: NSObject, ObservableObject {
     @Published var selectedCameraID: String?
 
     var onLocalCandidate: ((RTCIceCandidate) -> Void)?
+    weak var frameAnalyzer: CameraFrameAnalyzer?
 
     private var peerConnection: RTCPeerConnection?
     private var factory: RTCPeerConnectionFactory?
@@ -51,6 +52,23 @@ final class HostWebRTCService: NSObject, ObservableObject {
 
     func startCamera() {
         guard localVideoTrack == nil else { return }
+        switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .authorized:
+            startCamera(microphoneAllowed: true)
+        case .notDetermined:
+            audioState = "Requesting mic access"
+            AVCaptureDevice.requestAccess(for: .audio) { [weak self] granted in
+                Task { @MainActor in
+                    self?.startCamera(microphoneAllowed: granted)
+                }
+            }
+        default:
+            startCamera(microphoneAllowed: false)
+        }
+    }
+
+    private func startCamera(microphoneAllowed: Bool) {
+        guard localVideoTrack == nil else { return }
         refreshCameraOptions()
         RTCInitializeSSL()
 
@@ -61,16 +79,22 @@ final class HostWebRTCService: NSObject, ObservableObject {
 
         let videoSource = factory.videoSource()
         let captureController = CameraCaptureController(delegate: videoSource)
+        captureController.frameAnalyzer = frameAnalyzer
         self.captureController = captureController
         captureSession = captureController.session
 
         let track = factory.videoTrack(with: videoSource, trackId: "berrycam-video")
         localVideoTrack = track
-        localAudioTrack = factory.audioTrack(
-            with: factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)),
-            trackId: "berrycam-mac-audio"
-        )
-        audioState = "Mac mic ready"
+        if microphoneAllowed {
+            localAudioTrack = factory.audioTrack(
+                with: factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)),
+                trackId: "berrycam-mac-audio"
+            )
+            audioState = "Mac mic ready"
+        } else {
+            localAudioTrack = nil
+            audioState = "Mic unavailable"
+        }
         startCapture(using: captureController)
     }
 

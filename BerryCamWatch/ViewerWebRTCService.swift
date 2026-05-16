@@ -7,17 +7,21 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
     @Published private(set) var remoteVideoTrack: RTCVideoTrack?
     @Published private(set) var connectionState = "Idle"
     @Published private(set) var audioState = "Off"
-    @Published private(set) var isMicrophoneEnabled = true
+    @Published private(set) var isMicrophoneEnabled = false
     @Published private(set) var isWatching = false
+    @Published private(set) var detectionEvents: [CatDetectionEventPayload] = []
+    @Published private(set) var liveDetectionEvent: CatDetectionEventPayload?
+    @Published private(set) var historyState = "Not loaded"
 
     private var factory: RTCPeerConnectionFactory?
     private var peerConnection: RTCPeerConnection?
     private var signaling: SignalingClient?
     private var pollingTask: Task<Void, Never>?
+    private var detectionPollingTask: Task<Void, Never>?
     private var localAudioTrack: RTCAudioTrack?
     private var remoteAudioTrack: RTCAudioTrack?
 
-    func connect(host: String, port: UInt16, accessCode: String, microphoneEnabled: Bool) {
+    func connect(host: String, port: UInt16, accessCode: String, microphoneEnabled: Bool = false) {
         disconnect()
         isWatching = true
         connectionState = "Connecting"
@@ -101,6 +105,8 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
     func disconnect() {
         pollingTask?.cancel()
         pollingTask = nil
+        detectionPollingTask?.cancel()
+        detectionPollingTask = nil
         peerConnection?.close()
         peerConnection = nil
         signaling = nil
@@ -110,12 +116,51 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         isWatching = false
         connectionState = "Idle"
         audioState = "Off"
+        detectionEvents = []
+        liveDetectionEvent = nil
+        historyState = "Not loaded"
     }
 
     func setMicrophoneEnabled(_ enabled: Bool) {
         isMicrophoneEnabled = enabled
         localAudioTrack?.isEnabled = enabled
         audioState = enabled ? "Mic on" : "Mic off"
+    }
+
+    func refreshDetectionEvents() {
+        Task {
+            do {
+                historyState = "Loading"
+                updateDetectionEvents(try await signaling?.fetchDetectionEvents() ?? [])
+            } catch {
+                historyState = "History failed"
+            }
+        }
+    }
+
+    func snapshotURL(filename: String) -> URL? {
+        signaling?.snapshotURL(filename: filename)
+    }
+
+    func snapshotData(filename: String) async throws -> Data {
+        guard let signaling else { throw ViewerError.notConnected }
+        return try await signaling.fetchSnapshotData(filename: filename)
+    }
+
+    func deleteDetectionEvent(_ event: CatDetectionEventPayload) {
+        Task {
+            do {
+                try await signaling?.deleteDetectionEvent(id: event.id)
+                detectionEvents.removeAll { $0.id == event.id }
+                if liveDetectionEvent?.id == event.id {
+                    liveDetectionEvent = nil
+                }
+                historyState = detectionEvents.isEmpty ? "No events" : "Loaded"
+            } catch {
+                historyState = "Delete failed"
+                refreshDetectionEvents()
+            }
+        }
     }
 
     private func sendOffer(_ offer: RTCSessionDescription) {
@@ -130,6 +175,7 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
                         } else {
                             self?.connectionState = "Waiting for media"
                             self?.startCandidatePolling()
+                            self?.startDetectionPolling()
                         }
                     }
                 }
@@ -165,6 +211,42 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         }
     }
 
+    private func startDetectionPolling() {
+        detectionPollingTask?.cancel()
+        detectionPollingTask = Task { [weak self] in
+            while !Task.isCancelled {
+                do {
+                    guard let self else { return }
+                    let events = try await self.signaling?.fetchDetectionEvents() ?? []
+                    await MainActor.run {
+                        self.updateDetectionEvents(events)
+                    }
+                } catch {
+                    await MainActor.run {
+                        guard self?.detectionEvents.isEmpty == true else { return }
+                        self?.historyState = "History failed"
+                    }
+                }
+
+                try? await Task.sleep(nanoseconds: 2_500_000_000)
+            }
+        }
+    }
+
+    private func updateDetectionEvents(_ events: [CatDetectionEventPayload]) {
+        detectionEvents = events
+        historyState = events.isEmpty ? "No events" : "Updated"
+
+        guard
+            let latest = events.first,
+            Date().timeIntervalSince(latest.timestamp) <= 30
+        else {
+            liveDetectionEvent = nil
+            return
+        }
+        liveDetectionEvent = latest
+    }
+
     private func fail(_ error: Error) {
         connectionState = connectionMessage(for: error)
         isWatching = false
@@ -193,6 +275,14 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         default:
             return urlError.localizedDescription
         }
+    }
+}
+
+private enum ViewerError: LocalizedError {
+    case notConnected
+
+    var errorDescription: String? {
+        "BerryCam is not connected to the Mac host."
     }
 }
 

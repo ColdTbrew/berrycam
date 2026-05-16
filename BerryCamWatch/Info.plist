@@ -27,6 +27,8 @@
 	<string>BerryCam connects to your Mac through Tailscale or your local network.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>BerryCam uses the iPhone microphone for two-way audio with your Mac.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>BerryCam saves cat detection snapshots to your photo library when you choose Save.</string>
 	<key>NSSupportsLiveActivities</key>
 	<false/>
 	<key>UILaunchScreen</key>

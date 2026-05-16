@@ -39,6 +39,44 @@ final class SignalingClient {
         return payload.candidates.map(RTCIceCandidate.init(payload:))
     }
 
+    func fetchDetectionEvents() async throws -> [CatDetectionEventPayload] {
+        var components = URLComponents(url: baseURL.appending(path: "/events"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "code", value: accessCode),
+        ]
+        let (data, response) = try await URLSession.shared.data(from: components.url!)
+        try validate(response: response)
+        return try JSONDecoder().decode([CatDetectionEventPayload].self, from: data)
+    }
+
+    func snapshotURL(filename: String) -> URL? {
+        var components = URLComponents(url: baseURL.appending(path: "/snapshots/\(filename)"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "code", value: accessCode),
+        ]
+        return components?.url
+    }
+
+    func fetchSnapshotData(filename: String) async throws -> Data {
+        guard let url = snapshotURL(filename: filename) else {
+            throw SignalingError.badResponse
+        }
+        let (data, response) = try await URLSession.shared.data(from: url)
+        try validate(response: response)
+        return data
+    }
+
+    func deleteDetectionEvent(id: UUID) async throws {
+        var components = URLComponents(url: baseURL.appending(path: "/events/\(id.uuidString)"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "code", value: accessCode),
+        ]
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "DELETE"
+        let (_, response) = try await URLSession.shared.data(for: request)
+        try validate(response: response)
+    }
+
     private func post<T: Encodable, U: Decodable>(path: String, body: T) async throws -> U {
         var request = URLRequest(url: baseURL.appending(path: path))
         request.httpMethod = "POST"

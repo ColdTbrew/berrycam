@@ -4,6 +4,8 @@ struct ContentView: View {
     @EnvironmentObject private var webRTC: HostWebRTCService
     @EnvironmentObject private var signaling: SignalingServer
     @EnvironmentObject private var sleepPreventer: SleepPreventer
+    @EnvironmentObject private var detectionStore: DetectionEventStore
+    @EnvironmentObject private var catDetection: CatDetectionService
     @State private var accessCode = "berrycam"
     @State private var portText = "3000"
 
@@ -44,8 +46,8 @@ struct ContentView: View {
                     Label("Keep Mac Awake", systemImage: "moon.zzz")
                 }
 
-                SecureField("Access Code", text: $accessCode)
-                    .textContentType(.password)
+                TextField("Access Code", text: $accessCode)
+                    .font(.system(.body, design: .monospaced))
 
                 TextField("Port", text: $portText)
                     .monospacedDigit()
@@ -91,6 +93,25 @@ struct ContentView: View {
                 StatusRow(label: "Viewer", value: signaling.viewerStatus)
                 StatusRow(label: "Audio", value: webRTC.audioState)
                 StatusRow(label: "Sleep", value: sleepPreventer.status)
+            }
+
+            Section("Cat AI") {
+                Toggle(isOn: $catDetection.isEnabled) {
+                    Label("Detect Cats", systemImage: catDetection.isEnabled ? "pawprint.fill" : "pawprint")
+                }
+
+                StatusRow(label: "Vision", value: catDetection.status)
+                StatusRow(label: "Events", value: "\(detectionStore.events.count)")
+                StatusRow(label: "Keep", value: detectionStore.retentionSummary)
+
+                if detectionStore.events.isEmpty {
+                    Text("Start the host and BerryCam will record cat detections here.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(detectionStore.events.prefix(5)) { event in
+                        DetectionEventRow(event: event)
+                    }
+                }
             }
 
             Section("iPhone") {
@@ -184,6 +205,32 @@ private struct AddressRow: View {
                 .textSelection(.enabled)
                 .lineLimit(1)
                 .truncationMode(.middle)
+        }
+    }
+}
+
+private struct DetectionEventRow: View {
+    let event: CatDetectionEventPayload
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: event.type == .catMoved ? "figure.walk" : "pawprint")
+                .foregroundStyle(event.type == .catMoved ? .orange : .green)
+                .frame(width: 20)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(event.type.title)
+                    .font(.subheadline.weight(.semibold))
+                Text(event.timestamp.formatted(date: .omitted, time: .shortened))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Text("\(Int(event.confidence * 100))%")
+                .font(.caption.monospacedDigit().weight(.semibold))
+                .foregroundStyle(.secondary)
         }
     }
 }

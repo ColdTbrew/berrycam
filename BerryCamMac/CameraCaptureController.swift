@@ -7,6 +7,7 @@ final class CameraCaptureController: NSObject, AVCaptureVideoDataOutputSampleBuf
     private let output = AVCaptureVideoDataOutput()
     private let queue = DispatchQueue(label: "berrycam.camera.capture")
     private weak var delegate: RTCVideoCapturerDelegate?
+    weak var frameAnalyzer: CameraFrameAnalyzer?
     private var capturer: RTCVideoCapturer?
 
     init(delegate: RTCVideoCapturerDelegate) {
@@ -71,6 +72,8 @@ final class CameraCaptureController: NSObject, AVCaptureVideoDataOutputSampleBuf
             let delegate,
             let capturer
         else { return }
+
+        frameAnalyzer?.analyze(sampleBuffer: sampleBuffer)
 
         let buffer = RTCCVPixelBuffer(pixelBuffer: pixelBuffer)
         let timestamp = Int64(CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)) * 1_000_000_000)

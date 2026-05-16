@@ -1,12 +1,16 @@
+import Photos
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @EnvironmentObject private var viewer: ViewerWebRTCService
+    @EnvironmentObject private var recentHosts: RecentHostStore
     @State private var host = ""
     @State private var port = "3000"
     @State private var accessCode = "berrycam"
-    @State private var microphoneEnabled = true
+    @State private var microphoneEnabled = false
     @State private var connectionAlert: ConnectionAlert?
+    @State private var isShowingHistory = false
 
     var body: some View {
         NavigationStack {
@@ -21,10 +25,19 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if viewer.isWatching {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button {
+                            isShowingHistory = true
+                            viewer.refreshDetectionEvents()
+                        } label: {
+                            Label("History", systemImage: "clock")
+                        }
                         statusBadge
                     }
                 }
+            }
+            .sheet(isPresented: $isShowingHistory) {
+                DetectionHistoryView(viewer: viewer)
             }
             .alert(item: $connectionAlert) { alert in
                 Alert(
@@ -60,7 +73,10 @@ struct ContentView: View {
 
                     Divider()
 
-                SecureField("Access code", text: $accessCode)
+                TextField("Access code", text: $accessCode)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .font(.system(.body, design: .monospaced))
                     .padding(.vertical, 13)
 
                     Divider()
@@ -78,6 +94,10 @@ struct ContentView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+
+                if !recentHosts.hosts.isEmpty {
+                    recentHostsView
+                }
 
                 Button {
                     connect()
@@ -105,12 +125,92 @@ struct ContentView: View {
         .background(Color(.systemGroupedBackground))
     }
 
+    private var recentHostsView: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Recent Hosts")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 0) {
+                ForEach(recentHosts.hosts) { recent in
+                    Button {
+                        host = recent.host
+                        port = String(recent.port)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: recent.host.hasPrefix("100.") ? "network" : "wifi")
+                                .foregroundStyle(.secondary)
+                                .frame(width: 22)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(recent.displayAddress)
+                                    .font(.body.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+
+                                Text(recent.lastUsedAt.formatted(date: .abbreviated, time: .shortened))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .contentShape(Rectangle())
+                        .padding(.vertical, 12)
+                    }
+                    .buttonStyle(.plain)
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            recentHosts.remove(recent)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+
+                    if recent.id != recentHosts.hosts.last?.id {
+                        Divider()
+                    }
+                }
+            }
+            .padding(.horizontal, 14)
+            .background(.background, in: RoundedRectangle(cornerRadius: 8))
+        }
+    }
+
     private var watchingView: some View {
+        GeometryReader { proxy in
+            let isLandscape = proxy.size.width > proxy.size.height
+
+            if isLandscape {
+                liveVideoPane
+                    .ignoresSafeArea()
+            } else {
+                VStack(spacing: 0) {
+                    liveVideoPane
+                        .frame(height: portraitVideoHeight(in: proxy.size))
+                        .clipped()
+
+                    Divider()
+
+                    InlineDetectionHistoryView(viewer: viewer)
+                }
+                .background(Color(.systemBackground))
+            }
+        }
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .animation(.spring(response: 0.28, dampingFraction: 0.86), value: viewer.liveDetectionEvent?.id)
+    }
+
+    private var liveVideoPane: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color.black
 
             WebRTCVideoView(track: viewer.remoteVideoTrack)
-                .ignoresSafeArea()
                 .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
 
             if viewer.remoteVideoTrack == nil {
@@ -120,6 +220,15 @@ struct ContentView: View {
                     description: Text("BerryCam is connected and waiting for the Mac camera stream.")
                 )
                 .foregroundStyle(.white.secondary)
+            }
+
+            if let event = viewer.liveDetectionEvent {
+                CatDetectionOverlay(event: event)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .padding(.top, 72)
+                    .padding(.trailing, 16)
+                    .padding(.leading, 16)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
             }
 
             VStack {
@@ -157,7 +266,11 @@ struct ContentView: View {
             .padding(.top, 10)
             .padding(.leading, 12)
         }
-        .toolbarBackground(.hidden, for: .navigationBar)
+        .background(.black)
+    }
+
+    private func portraitVideoHeight(in size: CGSize) -> CGFloat {
+        min(size.height * 0.56, max(330, size.width * 1.12))
     }
 
     private var statusBadge: some View {
@@ -198,9 +311,11 @@ struct ContentView: View {
         }
 
         host = normalizedHost
+        let selectedPort = UInt16(port) ?? 3000
+        recentHosts.record(host: normalizedHost, port: selectedPort)
         viewer.connect(
             host: normalizedHost,
-            port: UInt16(port) ?? 3000,
+            port: selectedPort,
             accessCode: accessCode,
             microphoneEnabled: microphoneEnabled
         )
@@ -211,4 +326,395 @@ private struct ConnectionAlert: Identifiable {
     let id = UUID()
     let title: String
     let message: String
+}
+
+private struct DetectionHistoryView: View {
+    @ObservedObject var viewer: ViewerWebRTCService
+    @State private var selectedEvent: CatDetectionEventPayload?
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if viewer.detectionEvents.isEmpty {
+                    ContentUnavailableView(
+                        "No Cat Events",
+                        systemImage: "pawprint",
+                        description: Text(viewer.historyState)
+                    )
+                } else {
+                    List(viewer.detectionEvents) { event in
+                        Button {
+                            selectedEvent = event
+                        } label: {
+                            DetectionEventCell(event: event, snapshotURL: snapshotURL(for: event))
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                viewer.deleteDetectionEvent(event)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                    .listStyle(.plain)
+                }
+            }
+            .navigationTitle("Cat History")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewer.refreshDetectionEvents()
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .task {
+            viewer.refreshDetectionEvents()
+        }
+        .sheet(item: $selectedEvent) { event in
+            SnapshotDetailView(viewer: viewer, events: viewer.detectionEvents, initialEventID: event.id)
+        }
+    }
+
+    private func snapshotURL(for event: CatDetectionEventPayload) -> URL? {
+        guard let filename = event.snapshotFilename else { return nil }
+        return viewer.snapshotURL(filename: filename)
+    }
+}
+
+private struct InlineDetectionHistoryView: View {
+    @ObservedObject var viewer: ViewerWebRTCService
+    @State private var selectedEvent: CatDetectionEventPayload?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Label("Cat History", systemImage: "clock")
+                    .font(.headline.weight(.semibold))
+
+                Spacer()
+
+                Button {
+                    viewer.refreshDetectionEvents()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .accessibilityLabel("Refresh cat history")
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color(.systemBackground))
+
+            if viewer.detectionEvents.isEmpty {
+                ContentUnavailableView(
+                    "No Cat Events",
+                    systemImage: "pawprint",
+                    description: Text(viewer.historyState)
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                List(viewer.detectionEvents) { event in
+                    Button {
+                        selectedEvent = event
+                    } label: {
+                        DetectionEventCell(event: event, snapshotURL: snapshotURL(for: event))
+                    }
+                    .buttonStyle(.plain)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            viewer.deleteDetectionEvent(event)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                }
+                .listStyle(.plain)
+                .refreshable {
+                    viewer.refreshDetectionEvents()
+                }
+            }
+        }
+        .task {
+            viewer.refreshDetectionEvents()
+        }
+        .sheet(item: $selectedEvent) { event in
+            SnapshotDetailView(viewer: viewer, events: viewer.detectionEvents, initialEventID: event.id)
+        }
+    }
+
+    private func snapshotURL(for event: CatDetectionEventPayload) -> URL? {
+        guard let filename = event.snapshotFilename else { return nil }
+        return viewer.snapshotURL(filename: filename)
+    }
+}
+
+private struct CatDetectionOverlay: View {
+    let event: CatDetectionEventPayload
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: event.type == .catMoved ? "figure.walk" : "pawprint.fill")
+                .font(.headline)
+                .foregroundStyle(event.type == .catMoved ? .orange : .green)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(event.type == .catMoved ? "Cat movement detected" : "Cat detected")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(.white)
+                Text("\(Int(event.confidence * 100))% confidence")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
+        .frame(maxWidth: 300)
+        .background(.black.opacity(0.74), in: RoundedRectangle(cornerRadius: 8))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(.white.opacity(0.14), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.35), radius: 14, y: 8)
+        .accessibilityLabel("Cat detection \(Int(event.confidence * 100)) percent confidence")
+    }
+}
+
+private struct DetectionEventCell: View {
+    let event: CatDetectionEventPayload
+    let snapshotURL: URL?
+
+    var body: some View {
+        HStack(spacing: 12) {
+            snapshot
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(event.type.title)
+                    .font(.headline)
+                Text(event.timestamp.formatted(date: .abbreviated, time: .shortened))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text("\(Int(event.confidence * 100))% confidence")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, 6)
+    }
+
+    @ViewBuilder
+    private var snapshot: some View {
+        if let snapshotURL {
+            AsyncImage(url: snapshotURL) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                default:
+                    Image(systemName: "photo")
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 74, height: 54)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+        } else {
+            Image(systemName: "pawprint")
+                .foregroundStyle(.secondary)
+                .frame(width: 74, height: 54)
+                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 6))
+        }
+    }
+}
+
+private struct SnapshotDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var viewer: ViewerWebRTCService
+    let events: [CatDetectionEventPayload]
+    let initialEventID: UUID
+
+    @State private var selection: UUID
+    @State private var images: [UUID: UIImage] = [:]
+    @State private var loadStates: [UUID: String] = [:]
+    @State private var saveMessage: String?
+
+    init(viewer: ViewerWebRTCService, events: [CatDetectionEventPayload], initialEventID: UUID) {
+        self.viewer = viewer
+        self.events = events
+        self.initialEventID = initialEventID
+        _selection = State(initialValue: initialEventID)
+    }
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            GeometryReader { proxy in
+                TabView(selection: $selection) {
+                    ForEach(events) { event in
+                        SnapshotPageView(
+                            event: event,
+                            image: images[event.id],
+                            loadState: loadStates[event.id] ?? "Loading"
+                        )
+                        .tag(event.id)
+                        .task(id: event.id) {
+                            await loadImage(for: event)
+                        }
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .automatic))
+                    .frame(
+                        width: proxy.size.width,
+                        height: max(1, proxy.size.height - 132),
+                        alignment: .center
+                    )
+                    .padding(.top, 72)
+                    .padding(.bottom, 60)
+            }
+
+            topControls
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+
+            bottomInfo
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        }
+        .onChange(of: selection) { _, _ in
+            saveMessage = nil
+        }
+    }
+
+    private var currentEvent: CatDetectionEventPayload? {
+        events.first { $0.id == selection } ?? events.first
+    }
+
+    private var currentImage: UIImage? {
+        guard let currentEvent else { return nil }
+        return images[currentEvent.id]
+    }
+
+    private var topControls: some View {
+        HStack {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.title2.weight(.bold))
+                    .frame(width: 48, height: 48)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .background(.white.opacity(0.12), in: Circle())
+
+            Spacer()
+
+            Button {
+                saveImage()
+            } label: {
+                Image(systemName: "square.and.arrow.down")
+                    .font(.title3.weight(.bold))
+                    .frame(width: 48, height: 48)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .background(.white.opacity(currentImage == nil ? 0.05 : 0.12), in: Circle())
+            .disabled(currentImage == nil)
+        }
+        .padding(.horizontal, 28)
+        .padding(.top, 22)
+    }
+
+    private var bottomInfo: some View {
+        VStack(spacing: 4) {
+            if let currentEvent {
+                Text(currentEvent.timestamp.formatted(date: .abbreviated, time: .shortened))
+                    .font(.footnote.weight(.semibold))
+                Text(saveMessage ?? "\(Int(currentEvent.confidence * 100))% confidence")
+                    .font(.caption)
+                    .foregroundStyle(.white.secondary)
+            }
+        }
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(.black.opacity(0.72))
+    }
+
+    private func loadImage(for event: CatDetectionEventPayload) async {
+        guard images[event.id] == nil else { return }
+
+        guard let filename = event.snapshotFilename else {
+            loadStates[event.id] = "No snapshot was saved for this event."
+            return
+        }
+
+        do {
+            let data = try await viewer.snapshotData(filename: filename)
+            guard let loadedImage = UIImage(data: data) else {
+                loadStates[event.id] = "Could not open this snapshot."
+                return
+            }
+            images[event.id] = loadedImage
+            loadStates[event.id] = "Loaded"
+        } catch {
+            loadStates[event.id] = "Could not load this snapshot."
+        }
+    }
+
+    private func saveImage() {
+        guard let image = currentImage else { return }
+
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+            guard status == .authorized || status == .limited else {
+                Task { @MainActor in
+                    saveMessage = "Photos permission is needed to save."
+                }
+                return
+            }
+
+            PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            } completionHandler: { success, _ in
+                Task { @MainActor in
+                    saveMessage = success ? "Saved to Photos" : "Save failed"
+                }
+            }
+        }
+    }
+}
+
+private struct SnapshotPageView: View {
+    let event: CatDetectionEventPayload
+    let image: UIImage?
+    let loadState: String
+
+    var body: some View {
+        Group {
+            if let image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ContentUnavailableView(
+                    "Snapshot",
+                    systemImage: "photo",
+                    description: Text(loadState)
+                )
+                .foregroundStyle(.white.secondary)
+            }
+        }
+        .padding(.horizontal, 16)
+        .accessibilityLabel("\(event.type.title) snapshot")
+    }
 }
