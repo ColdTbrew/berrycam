@@ -1,18 +1,24 @@
 import SwiftUI
 import LiveKitWebRTC
+#if os(iOS)
+import UIKit
+#endif
 
 #if os(iOS)
 struct WebRTCVideoView: UIViewRepresentable {
     let track: RTCVideoTrack?
+    let letterboxColor: UIColor
 
     func makeUIView(context: Context) -> RTCMTLVideoView {
         let view = RTCMTLVideoView(frame: .zero)
         view.videoContentMode = .scaleAspectFit
         view.clipsToBounds = true
+        view.backgroundColor = letterboxColor
         return view
     }
 
     func updateUIView(_ uiView: RTCMTLVideoView, context: Context) {
+        uiView.backgroundColor = letterboxColor
         context.coordinator.update(track: track, renderer: uiView)
     }
 

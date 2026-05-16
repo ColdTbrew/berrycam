@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 
 struct ContentView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var viewer: ViewerWebRTCService
     @EnvironmentObject private var recentHosts: RecentHostStore
     @State private var host = ""
@@ -208,9 +209,9 @@ struct ContentView: View {
 
     private var liveVideoPane: some View {
         ZStack {
-            Color.black
+            liveLetterboxColor
 
-            WebRTCVideoView(track: viewer.remoteVideoTrack)
+            WebRTCVideoView(track: viewer.remoteVideoTrack, letterboxColor: uiLiveLetterboxColor)
                 .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
 
             if viewer.remoteVideoTrack == nil {
@@ -266,11 +267,19 @@ struct ContentView: View {
             .padding(.top, 10)
             .padding(.leading, 12)
         }
-        .background(.black)
+        .background(liveLetterboxColor)
     }
 
     private func portraitVideoHeight(in size: CGSize) -> CGFloat {
         max(220, size.width * 9 / 16)
+    }
+
+    private var liveLetterboxColor: Color {
+        colorScheme == .dark ? .black : .white
+    }
+
+    private var uiLiveLetterboxColor: UIColor {
+        colorScheme == .dark ? .black : .white
     }
 
     private var statusBadge: some View {
