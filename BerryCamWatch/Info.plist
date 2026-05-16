@@ -31,6 +31,10 @@
 	<string>BerryCam saves cat detection snapshots to your photo library when you choose Save.</string>
 	<key>NSSupportsLiveActivities</key>
 	<false/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UIRequiresFullScreen</key>

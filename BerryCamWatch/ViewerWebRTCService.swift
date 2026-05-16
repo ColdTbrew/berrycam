@@ -26,9 +26,7 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         isWatching = true
         connectionState = "Connecting"
         setMicrophoneEnabled(microphoneEnabled)
-        if microphoneEnabled {
-            configureAudioSession()
-        }
+        configureAudioSession(allowsRecording: microphoneEnabled)
 
         RTCInitializeSSL()
         let encoderFactory = RTCDefaultVideoEncoderFactory()
@@ -252,10 +250,14 @@ final class ViewerWebRTCService: NSObject, ObservableObject {
         isWatching = false
     }
 
-    private func configureAudioSession() {
+    private func configureAudioSession(allowsRecording: Bool) {
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .videoChat, options: [.defaultToSpeaker, .allowBluetoothHFP])
+            if allowsRecording {
+                try session.setCategory(.playAndRecord, mode: .videoChat, options: [.defaultToSpeaker, .allowBluetoothHFP])
+            } else {
+                try session.setCategory(.playback, mode: .moviePlayback)
+            }
             try session.setActive(true)
         } catch {
             audioState = "Audio setup failed"

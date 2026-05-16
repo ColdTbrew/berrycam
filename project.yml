@@ -53,6 +53,8 @@ targets:
         NSMicrophoneUsageDescription: BerryCam uses the iPhone microphone for two-way audio with your Mac.
         NSPhotoLibraryAddUsageDescription: BerryCam saves cat detection snapshots to your photo library when you choose Save.
         NSSupportsLiveActivities: false
+        UIBackgroundModes:
+          - audio
         UILaunchScreen: {}
         UIRequiresFullScreen: true
         UISupportedInterfaceOrientations:
