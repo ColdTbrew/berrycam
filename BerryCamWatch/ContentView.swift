@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var microphoneEnabled = false
     @State private var connectionAlert: ConnectionAlert?
     @State private var isShowingHistory = false
+    @State private var isInlineHistoryVisible = true
 
     var body: some View {
         NavigationStack {
@@ -190,15 +191,38 @@ struct ContentView: View {
                         .frame(height: portraitVideoHeight(in: proxy.size))
                         .clipped()
 
-                    Divider()
+                    if isInlineHistoryVisible {
+                        Divider()
 
-                    InlineDetectionHistoryView(viewer: viewer)
+                        InlineDetectionHistoryView(
+                            viewer: viewer,
+                            collapseHistory: {
+                                withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
+                                    isInlineHistoryVisible = false
+                                }
+                            }
+                        )
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    } else {
+                        Spacer(minLength: 0)
+                    }
                 }
                 .background(Color(.systemBackground))
+                .contentShape(Rectangle())
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 28)
+                        .onEnded { value in
+                            guard !isInlineHistoryVisible, value.translation.height < -44 else { return }
+                            withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
+                                isInlineHistoryVisible = true
+                            }
+                        }
+                )
             }
         }
         .toolbarBackground(.hidden, for: .navigationBar)
         .animation(.spring(response: 0.28, dampingFraction: 0.86), value: viewer.liveDetectionEvent?.id)
+        .animation(.spring(response: 0.34, dampingFraction: 0.88), value: isInlineHistoryVisible)
     }
 
     private var liveVideoPane: some View {
@@ -414,6 +438,7 @@ private struct DetectionHistoryView: View {
 
 private struct InlineDetectionHistoryView: View {
     @ObservedObject var viewer: ViewerWebRTCService
+    let collapseHistory: () -> Void
     @State private var selectedEvent: CatDetectionEventPayload?
 
     var body: some View {
@@ -466,6 +491,13 @@ private struct InlineDetectionHistoryView: View {
                 .refreshable {
                     viewer.refreshDetectionEvents()
                 }
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 28)
+                        .onEnded { value in
+                            guard value.translation.height > 44 else { return }
+                            collapseHistory()
+                        }
+                )
             }
         }
         .task {
