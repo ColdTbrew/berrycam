@@ -183,11 +183,11 @@ struct ContentView: View {
             let isLandscape = proxy.size.width > proxy.size.height
 
             if isLandscape {
-                liveVideoPane
+                liveVideoPane(centeredVideo: false)
                     .ignoresSafeArea()
             } else {
                 VStack(spacing: 0) {
-                    liveVideoPane
+                    liveVideoPane(centeredVideo: !isInlineHistoryVisible)
                         .frame(height: portraitVideoHeight(in: proxy.size, showingHistory: isInlineHistoryVisible))
                         .clipped()
 
@@ -223,71 +223,79 @@ struct ContentView: View {
         .animation(.spring(response: 0.34, dampingFraction: 0.88), value: isInlineHistoryVisible)
     }
 
-    private var liveVideoPane: some View {
-        ZStack {
-            liveLetterboxColor
+    private func liveVideoPane(centeredVideo: Bool) -> some View {
+        GeometryReader { proxy in
+            ZStack {
+                liveLetterboxColor
 
-            WebRTCVideoView(track: viewer.remoteVideoTrack, letterboxColor: uiLiveLetterboxColor)
-                .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
+                WebRTCVideoView(track: viewer.remoteVideoTrack, letterboxColor: uiLiveLetterboxColor)
+                    .frame(height: videoFrameHeight(in: proxy.size, centeredVideo: centeredVideo))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
 
-            if viewer.remoteVideoTrack == nil {
-                ContentUnavailableView(
-                    "Waiting for Video",
-                    systemImage: "video",
-                    description: Text("BerryCam is connected and waiting for the Mac camera stream.")
-                )
-                .foregroundStyle(.white.secondary)
-            }
-
-            if let event = viewer.liveDetectionEvent {
-                CatDetectionOverlay(event: event)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                    .padding(.top, 72)
-                    .padding(.trailing, 16)
-                    .padding(.leading, 16)
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
-            }
-
-            VStack {
-                Spacer()
-                HStack(spacing: 10) {
-                    Button {
-                        viewer.setMicrophoneEnabled(!viewer.isMicrophoneEnabled)
-                    } label: {
-                        Label(
-                            viewer.isMicrophoneEnabled ? "Mic On" : "Mic Off",
-                            systemImage: viewer.isMicrophoneEnabled ? "mic.fill" : "mic.slash.fill"
-                        )
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(viewer.isMicrophoneEnabled ? .green : .red)
-
-                    Text(viewer.audioState)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white.secondary)
+                if viewer.remoteVideoTrack == nil {
+                    ContentUnavailableView(
+                        "Waiting for Video",
+                        systemImage: "video",
+                        description: Text("BerryCam is connected and waiting for the Mac camera stream.")
+                    )
+                    .foregroundStyle(.white.secondary)
                 }
-                .padding(.bottom, 14)
-            }
 
-            Button {
-                viewer.disconnect()
-            } label: {
-                Label("Disconnect", systemImage: "stop.fill")
-                    .font(.callout.weight(.semibold))
-                    .foregroundStyle(.red)
-                    .padding(8)
-                    .contentShape(Rectangle())
+                if let event = viewer.liveDetectionEvent {
+                    CatDetectionOverlay(event: event)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .padding(.top, 72)
+                        .padding(.trailing, 16)
+                        .padding(.leading, 16)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+
+                VStack {
+                    Spacer()
+                    HStack(spacing: 10) {
+                        Button {
+                            viewer.setMicrophoneEnabled(!viewer.isMicrophoneEnabled)
+                        } label: {
+                            Label(
+                                viewer.isMicrophoneEnabled ? "Mic On" : "Mic Off",
+                                systemImage: viewer.isMicrophoneEnabled ? "mic.fill" : "mic.slash.fill"
+                            )
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(viewer.isMicrophoneEnabled ? .green : .red)
+
+                        Text(viewer.audioState)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white.secondary)
+                    }
+                    .padding(.bottom, 14)
+                }
+
+                Button {
+                    viewer.disconnect()
+                } label: {
+                    Label("Disconnect", systemImage: "stop.fill")
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(.red)
+                        .padding(8)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.top, 10)
+                .padding(.leading, 12)
             }
-            .buttonStyle(.plain)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .padding(.top, 10)
-            .padding(.leading, 12)
+            .background(liveLetterboxColor)
         }
-        .background(liveLetterboxColor)
     }
 
     private func portraitVideoHeight(in size: CGSize, showingHistory: Bool) -> CGFloat {
         showingHistory ? max(220, size.width * 9 / 16) : size.height
+    }
+
+    private func videoFrameHeight(in size: CGSize, centeredVideo: Bool) -> CGFloat {
+        centeredVideo ? min(size.height, size.width * 9 / 16) : size.height
     }
 
     private var liveLetterboxColor: Color {
