@@ -13,6 +13,8 @@ struct ContentView: View {
     @State private var connectionAlert: ConnectionAlert?
     @State private var isShowingHistory = false
     @State private var isInlineHistoryVisible = true
+    @State private var liveVideoZoomScale: CGFloat = 1
+    @GestureState private var liveVideoPinchScale: CGFloat = 1
 
     var body: some View {
         NavigationStack {
@@ -231,6 +233,8 @@ struct ContentView: View {
                 WebRTCVideoView(track: viewer.remoteVideoTrack, letterboxColor: uiLiveLetterboxColor)
                     .frame(height: videoFrameHeight(in: proxy.size, centeredVideo: centeredVideo))
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .scaleEffect(currentLiveVideoZoomScale)
+                    .gesture(liveVideoZoomGesture)
                     .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
 
                 if viewer.remoteVideoTrack == nil {
@@ -249,6 +253,29 @@ struct ContentView: View {
                         .padding(.trailing, 16)
                         .padding(.leading, 16)
                         .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+
+                if isLiveVideoZoomed {
+                    Button {
+                        resetLiveVideoZoom()
+                    } label: {
+                        Label("Reset zoom", systemImage: "arrow.counterclockwise")
+                            .font(.caption.weight(.bold))
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.primary)
+                            .frame(width: 38, height: 38)
+                            .background(.ultraThinMaterial, in: Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(.primary.opacity(0.1), lineWidth: 1)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Reset video zoom")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .padding(.top, 16)
+                    .padding(.trailing, 16)
+                    .transition(.scale.combined(with: .opacity))
                 }
 
                 VStack {
@@ -296,6 +323,34 @@ struct ContentView: View {
 
     private func videoFrameHeight(in size: CGSize, centeredVideo: Bool) -> CGFloat {
         centeredVideo ? min(size.height, size.width * 9 / 16) : size.height
+    }
+
+    private var liveVideoZoomGesture: some Gesture {
+        MagnificationGesture()
+            .updating($liveVideoPinchScale) { value, state, _ in
+                state = value
+            }
+            .onEnded { value in
+                liveVideoZoomScale = clampedLiveVideoZoomScale(liveVideoZoomScale * value)
+            }
+    }
+
+    private var currentLiveVideoZoomScale: CGFloat {
+        clampedLiveVideoZoomScale(liveVideoZoomScale * liveVideoPinchScale)
+    }
+
+    private var isLiveVideoZoomed: Bool {
+        abs(currentLiveVideoZoomScale - 1) > 0.01
+    }
+
+    private func resetLiveVideoZoom() {
+        withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+            liveVideoZoomScale = 1
+        }
+    }
+
+    private func clampedLiveVideoZoomScale(_ scale: CGFloat) -> CGFloat {
+        min(max(scale, 1), 3)
     }
 
     private var liveLetterboxColor: Color {
