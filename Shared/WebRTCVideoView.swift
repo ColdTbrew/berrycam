@@ -7,7 +7,8 @@ struct WebRTCVideoView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> RTCMTLVideoView {
         let view = RTCMTLVideoView(frame: .zero)
-        view.videoContentMode = .scaleAspectFit
+        view.videoContentMode = .scaleAspectFill
+        view.clipsToBounds = true
         return view
     }
 

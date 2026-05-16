@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var microphoneEnabled = false
     @State private var connectionAlert: ConnectionAlert?
     @State private var isShowingHistory = false
+    @State private var isHistoryExpanded = true
 
     var body: some View {
         NavigationStack {
@@ -192,18 +193,39 @@ struct ContentView: View {
             } else {
                 VStack(spacing: 0) {
                     liveVideoPane
-                        .frame(height: portraitVideoHeight(in: proxy.size))
+                        .frame(height: portraitVideoHeight(in: proxy.size, historyExpanded: isHistoryExpanded))
                         .clipped()
 
-                    Divider()
+                    if isHistoryExpanded {
+                        Divider()
 
-                    InlineDetectionHistoryView(viewer: viewer)
+                        InlineDetectionHistoryView(
+                            viewer: viewer,
+                            collapseHistory: {
+                                withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
+                                    isHistoryExpanded = false
+                                }
+                            }
+                        )
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
                 }
                 .background(Color(.systemBackground))
+                .contentShape(Rectangle())
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 28)
+                        .onEnded { value in
+                            guard value.translation.height < -44 else { return }
+                            withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
+                                isHistoryExpanded = true
+                            }
+                        }
+                )
             }
         }
         .toolbarBackground(.hidden, for: .navigationBar)
         .animation(.spring(response: 0.28, dampingFraction: 0.86), value: viewer.liveDetectionEvent?.id)
+        .animation(.spring(response: 0.34, dampingFraction: 0.88), value: isHistoryExpanded)
     }
 
     private var liveVideoPane: some View {
@@ -269,8 +291,11 @@ struct ContentView: View {
         .background(.black)
     }
 
-    private func portraitVideoHeight(in size: CGSize) -> CGFloat {
-        min(size.height * 0.56, max(330, size.width * 1.12))
+    private func portraitVideoHeight(in size: CGSize, historyExpanded: Bool) -> CGFloat {
+        if historyExpanded {
+            return min(size.height * 0.48, max(300, size.width * 0.96))
+        }
+        return size.height
     }
 
     private var statusBadge: some View {
@@ -389,6 +414,7 @@ private struct DetectionHistoryView: View {
 
 private struct InlineDetectionHistoryView: View {
     @ObservedObject var viewer: ViewerWebRTCService
+    let collapseHistory: () -> Void
     @State private var selectedEvent: CatDetectionEventPayload?
 
     var body: some View {
@@ -427,6 +453,8 @@ private struct InlineDetectionHistoryView: View {
                         DetectionEventCell(event: event, snapshotURL: snapshotURL(for: event))
                     }
                     .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
+                    .listRowSeparatorTint(.black.opacity(0.12))
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             viewer.deleteDetectionEvent(event)
@@ -439,6 +467,13 @@ private struct InlineDetectionHistoryView: View {
                 .refreshable {
                     viewer.refreshDetectionEvents()
                 }
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 28)
+                        .onEnded { value in
+                            guard value.translation.height > 44 else { return }
+                            collapseHistory()
+                        }
+                )
             }
         }
         .task {
