@@ -26,14 +26,8 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if viewer.isWatching {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button {
-                            isShowingHistory = true
-                            viewer.refreshDetectionEvents()
-                        } label: {
-                            Label("History", systemImage: "clock")
-                        }
-                        statusBadge
+                    ToolbarItem(placement: .topBarTrailing) {
+                        connectionToolbarControl
                     }
                 }
             }
@@ -282,14 +276,36 @@ struct ContentView: View {
         colorScheme == .dark ? .black : .white
     }
 
-    private var statusBadge: some View {
-        Text(viewer.connectionState)
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(statusColor)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(statusColor.opacity(0.14), in: Capsule())
-            .accessibilityLabel("Connection status \(viewer.connectionState)")
+    private var connectionToolbarControl: some View {
+        HStack(spacing: 9) {
+            Button {
+                isShowingHistory = true
+                viewer.refreshDetectionEvents()
+            } label: {
+                Image(systemName: "clock")
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .frame(width: 30, height: 30)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Open cat history")
+
+            Text(viewer.connectionState)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(statusColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+        }
+        .padding(.leading, 8)
+        .padding(.trailing, 12)
+        .padding(.vertical, 7)
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(
+            Capsule()
+                .stroke(.primary.opacity(0.08), lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Connection status \(viewer.connectionState)")
     }
 
     private var statusColor: Color {
