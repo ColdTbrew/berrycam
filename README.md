@@ -1,6 +1,6 @@
 # BerryCam
 
-![BerryCam native cat monitor](docs/media/berrycam-hero.svg)
+![BerryCam macOS host app with generated cat demo feed](docs/media/berrycam-macos-app.png)
 
 BerryCam is a native Swift pet monitor for keeping an eye on a cat at home from an iPhone or Mac. The Mac app hosts the camera, runs lightweight cat detection, stores timestamped detection snapshots, and streams live video to iOS through WebRTC.
 
@@ -8,11 +8,11 @@ The project is intentionally private-network first: use Tailscale or a local net
 
 ## App Screens
 
-The images below are documentation mockups made with generated cat artwork, not real webcam captures.
+The images below are captured from the actual macOS app and iOS Simulator. The live camera area is running BerryCam's documentation demo mode, so it uses generated cat artwork instead of a real webcam feed.
 
 | iOS viewer | macOS host |
 | --- | --- |
-| ![BerryCam iOS viewer with cat history](docs/media/berrycam-ios-viewer.svg) | ![BerryCam macOS host with cat AI panel](docs/media/berrycam-mac-host.svg) |
+| ![BerryCam iOS viewer with cat history](docs/media/berrycam-ios-app.png) | ![BerryCam macOS host with cat AI panel](docs/media/berrycam-macos-app.png) |
 
 ## Features
 

@@ -15,10 +15,12 @@
 		259D1BB8BC2ACD5940E1DA43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC6F864EA608F657EC2AE3D0 /* Assets.xcassets */; };
 		5144EBD60849A14E2FDD5E99 /* SignalingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D039012A7AA6E750A0E3649 /* SignalingServer.swift */; };
 		566D1AFA9D621AA98F1982F5 /* DetectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74BA2BF6578D7FC9B4C039D /* DetectionModels.swift */; };
+		5C375FB1F939EA30A656AB57 /* DocumentationDemoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234B6E9B6F2458721B9C9273 /* DocumentationDemoContent.swift */; };
 		606E0192BA3D699FAE2D436A /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 0208176193B01B2446C5FB7F /* LiveKitWebRTC */; };
 		64624E58C1B6E6D923671302 /* CameraFrameAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD85576B1CBDE1D65A93938 /* CameraFrameAnalyzer.swift */; };
 		64A8AC0602A5A16887691464 /* LiveKitWebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 30BBA0FB0BF8E94A4759812A /* LiveKitWebRTC */; };
 		7707AE824FDAD6CA56FF719D /* DetectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74BA2BF6578D7FC9B4C039D /* DetectionModels.swift */; };
+		795AC203F786FF8655B3585F /* DocumentationDemoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234B6E9B6F2458721B9C9273 /* DocumentationDemoContent.swift */; };
 		7B415D303C2EF3BE44810F69 /* CameraCaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D8A7646D8329119E151562 /* CameraCaptureController.swift */; };
 		7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */; };
 		7EA08AB69F8579CC818AD523 /* WebRTCAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */; };
@@ -40,6 +42,7 @@
 		02D8A7646D8329119E151562 /* CameraCaptureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureController.swift; sourceTree = "<group>"; };
 		18BC2D5C22B28439D44448AD /* HostWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostWebRTCService.swift; sourceTree = "<group>"; };
 		21A447BF34D45500FCFADE77 /* RecentHostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentHostStore.swift; sourceTree = "<group>"; };
+		234B6E9B6F2458721B9C9273 /* DocumentationDemoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentationDemoContent.swift; sourceTree = "<group>"; };
 		4F5CC4BA317E781EC6432997 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		520A8940B92E4BAF03BB7559 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		585E77A9DDE0F9351319A6FC /* ViewerWebRTCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewerWebRTCService.swift; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				E74BA2BF6578D7FC9B4C039D /* DetectionModels.swift */,
+				234B6E9B6F2458721B9C9273 /* DocumentationDemoContent.swift */,
 				656603CE7C831CC94DA5FF5B /* SignalingModels.swift */,
 				F2019646AE3C4A362DACB523 /* WebRTCAliases.swift */,
 				E60FF4544FE452EF30A4FFB7 /* WebRTCVideoView.swift */,
@@ -255,6 +259,7 @@
 				A5687F011804B7B3B5D913FD /* BerryCamWatchApp.swift in Sources */,
 				B0EC02D2E8F67B9FAFD54C0F /* ContentView.swift in Sources */,
 				566D1AFA9D621AA98F1982F5 /* DetectionModels.swift in Sources */,
+				795AC203F786FF8655B3585F /* DocumentationDemoContent.swift in Sources */,
 				22692E470E72ED834BF02D61 /* RecentHostStore.swift in Sources */,
 				E2A3D3C678385C44C4588335 /* SignalingClient.swift in Sources */,
 				22831C8A78750CA8C67548C5 /* SignalingModels.swift in Sources */,
@@ -276,6 +281,7 @@
 				8E4FC5EFB2FD1A6F8DA66A27 /* ContentView.swift in Sources */,
 				1AF0B3CF03F542023788C93F /* DetectionEventStore.swift in Sources */,
 				7707AE824FDAD6CA56FF719D /* DetectionModels.swift in Sources */,
+				5C375FB1F939EA30A656AB57 /* DocumentationDemoContent.swift in Sources */,
 				7DFFF5A336BD32B8FA640087 /* HostWebRTCService.swift in Sources */,
 				DD4AD57B4E4743D3ED853090 /* SignalingModels.swift in Sources */,
 				5144EBD60849A14E2FDD5E99 /* SignalingServer.swift in Sources */,

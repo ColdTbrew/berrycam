@@ -8,6 +8,7 @@ struct ContentView: View {
     @EnvironmentObject private var catDetection: CatDetectionService
     @State private var accessCode = "berrycam"
     @State private var portText = "3000"
+    private let documentationDemoEvents = CatDetectionEventPayload.documentationDemoEvents
 
     var body: some View {
         NavigationSplitView {
@@ -100,15 +101,15 @@ struct ContentView: View {
                     Label("Detect Cats", systemImage: catDetection.isEnabled ? "pawprint.fill" : "pawprint")
                 }
 
-                StatusRow(label: "Vision", value: catDetection.status)
-                StatusRow(label: "Events", value: "\(detectionStore.events.count)")
+                StatusRow(label: "Vision", value: isDocumentationDemo ? "Cat" : catDetection.status)
+                StatusRow(label: "Events", value: "\(displayedDetectionEvents.count)")
                 StatusRow(label: "Keep", value: detectionStore.retentionSummary)
 
-                if detectionStore.events.isEmpty {
+                if displayedDetectionEvents.isEmpty {
                     Text("Start the host and BerryCam will record cat detections here.")
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(detectionStore.events.prefix(5)) { event in
+                    ForEach(displayedDetectionEvents.prefix(5)) { event in
                         DetectionEventRow(event: event)
                     }
                 }
@@ -133,10 +134,14 @@ struct ContentView: View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
                 ZStack {
-                    CameraPreviewView(session: webRTC.captureSession)
-                        .opacity(webRTC.captureSession == nil ? 0 : 1)
+                    if isDocumentationDemo {
+                        DocumentationCatVideoScene()
+                    } else {
+                        CameraPreviewView(session: webRTC.captureSession)
+                            .opacity(webRTC.captureSession == nil ? 0 : 1)
+                    }
 
-                    if webRTC.captureSession == nil {
+                    if webRTC.captureSession == nil && !isDocumentationDemo {
                         ContentUnavailableView(
                             "Camera Preview",
                             systemImage: "video",
@@ -174,6 +179,14 @@ struct ContentView: View {
     private func stop() {
         signaling.stop()
         webRTC.stop()
+    }
+
+    private var displayedDetectionEvents: [CatDetectionEventPayload] {
+        isDocumentationDemo ? documentationDemoEvents : detectionStore.events
+    }
+
+    private var isDocumentationDemo: Bool {
+        ProcessInfo.processInfo.environment["BERRYCAM_DOCS_DEMO"] == "1"
     }
 }
 

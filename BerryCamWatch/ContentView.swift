@@ -15,11 +15,12 @@ struct ContentView: View {
     @State private var isInlineHistoryVisible = true
     @State private var liveVideoZoomScale: CGFloat = 1
     @GestureState private var liveVideoPinchScale: CGFloat = 1
+    private let documentationDemoEvents = CatDetectionEventPayload.documentationDemoEvents
 
     var body: some View {
         NavigationStack {
             Group {
-                if viewer.isWatching {
+                if viewer.isWatching || isDocumentationDemo {
                     watchingView
                 } else {
                     setupView
@@ -198,6 +199,7 @@ struct ContentView: View {
 
                         InlineDetectionHistoryView(
                             viewer: viewer,
+                            demoEvents: isDocumentationDemo ? documentationDemoEvents : [],
                             collapseHistory: {
                                 withAnimation(.spring(response: 0.34, dampingFraction: 0.88)) {
                                     isInlineHistoryVisible = false
@@ -230,14 +232,20 @@ struct ContentView: View {
             ZStack {
                 liveLetterboxColor
 
-                WebRTCVideoView(track: viewer.remoteVideoTrack, letterboxColor: uiLiveLetterboxColor)
-                    .frame(height: videoFrameHeight(in: proxy.size, centeredVideo: centeredVideo))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    .scaleEffect(currentLiveVideoZoomScale)
-                    .gesture(liveVideoZoomGesture)
-                    .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
+                Group {
+                    if isDocumentationDemo {
+                        DocumentationCatVideoScene()
+                    } else {
+                        WebRTCVideoView(track: viewer.remoteVideoTrack, letterboxColor: uiLiveLetterboxColor)
+                            .opacity(viewer.remoteVideoTrack == nil ? 0 : 1)
+                    }
+                }
+                .frame(height: videoFrameHeight(in: proxy.size, centeredVideo: centeredVideo))
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .scaleEffect(currentLiveVideoZoomScale)
+                .gesture(liveVideoZoomGesture)
 
-                if viewer.remoteVideoTrack == nil {
+                if viewer.remoteVideoTrack == nil && !isDocumentationDemo {
                     ContentUnavailableView(
                         "Waiting for Video",
                         systemImage: "video",
@@ -359,6 +367,10 @@ struct ContentView: View {
 
     private var uiLiveLetterboxColor: UIColor {
         colorScheme == .dark ? .black : .white
+    }
+
+    private var isDocumentationDemo: Bool {
+        ProcessInfo.processInfo.environment["BERRYCAM_DOCS_DEMO"] == "1"
     }
 
     private var connectionToolbarControl: some View {
@@ -499,10 +511,13 @@ private struct DetectionHistoryView: View {
 
 private struct InlineDetectionHistoryView: View {
     @ObservedObject var viewer: ViewerWebRTCService
+    let demoEvents: [CatDetectionEventPayload]
     let collapseHistory: () -> Void
     @State private var selectedEvent: CatDetectionEventPayload?
 
     var body: some View {
+        let events = demoEvents.isEmpty ? viewer.detectionEvents : demoEvents
+
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Label("Cat History", systemImage: "clock")
@@ -523,7 +538,7 @@ private struct InlineDetectionHistoryView: View {
             .padding(.vertical, 12)
             .background(Color(.systemBackground))
 
-            if viewer.detectionEvents.isEmpty {
+            if events.isEmpty {
                 ContentUnavailableView(
                     "No Cat Events",
                     systemImage: "pawprint",
@@ -531,7 +546,7 @@ private struct InlineDetectionHistoryView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List(viewer.detectionEvents) { event in
+                List(events) { event in
                     Button {
                         selectedEvent = event
                     } label: {
@@ -562,10 +577,12 @@ private struct InlineDetectionHistoryView: View {
             }
         }
         .task {
-            viewer.refreshDetectionEvents()
+            if demoEvents.isEmpty {
+                viewer.refreshDetectionEvents()
+            }
         }
         .sheet(item: $selectedEvent) { event in
-            SnapshotDetailView(viewer: viewer, events: viewer.detectionEvents, initialEventID: event.id)
+            SnapshotDetailView(viewer: viewer, events: events, initialEventID: event.id)
         }
     }
 
