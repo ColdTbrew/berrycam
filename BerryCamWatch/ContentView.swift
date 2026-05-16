@@ -188,7 +188,7 @@ struct ContentView: View {
             } else {
                 VStack(spacing: 0) {
                     liveVideoPane
-                        .frame(height: portraitVideoHeight(in: proxy.size))
+                        .frame(height: portraitVideoHeight(in: proxy.size, showingHistory: isInlineHistoryVisible))
                         .clipped()
 
                     if isInlineHistoryVisible {
@@ -203,8 +203,6 @@ struct ContentView: View {
                             }
                         )
                         .transition(.move(edge: .bottom).combined(with: .opacity))
-                    } else {
-                        Spacer(minLength: 0)
                     }
                 }
                 .background(Color(.systemBackground))
@@ -288,8 +286,8 @@ struct ContentView: View {
         .background(liveLetterboxColor)
     }
 
-    private func portraitVideoHeight(in size: CGSize) -> CGFloat {
-        max(220, size.width * 9 / 16)
+    private func portraitVideoHeight(in size: CGSize, showingHistory: Bool) -> CGFloat {
+        showingHistory ? max(220, size.width * 9 / 16) : size.height
     }
 
     private var liveLetterboxColor: Color {
